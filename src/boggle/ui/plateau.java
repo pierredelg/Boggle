@@ -1,3 +1,4 @@
+package boggle.ui;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -23,7 +24,7 @@ public class plateau extends Application {
 //        Scanner sc = new Scanner(System.in);
 //        System.out.println("Saisissez la taille du plateau : ");
 //        int taille = sc.nextInt();
-        int taille  = 6;
+        int taille  = 8;
         GridPane gridpane = new GridPane();
         for (int ligne = 1; ligne <= taille; ligne++) {
             for (int colonne = 1; colonne <= taille; colonne++) {
