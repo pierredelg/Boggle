@@ -1,5 +1,6 @@
 package boggle.ui;
-import boggle.mots.De;
+import boggle.mots.Config;
+import boggle.mots.De2;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -12,11 +13,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import java.util.List;
-import java.util.Scanner;
 
-public class plateau extends Application {
+public class Plateau extends Application {
 
     private String[][] etatPlateau;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -29,17 +30,33 @@ public class plateau extends Application {
 //        int taille = sc.nextInt();
 
         int taille  = 4;
+
         etatPlateau = new String[taille][taille];
-        List<String> characterList = De.lireFichierCsv();
+
+        // TODO
+        //List<String> characterList = De.lireFichierCsv();
+        Config config = new Config();
+        config.chargerConfigDe();
+        List<De2> de2List = config.de2List;
 
         GridPane gridpane = new GridPane();
         int numeroCharacter = 0;
         for (int ligne = 1; ligne <= taille; ligne++) {
             for (int colonne = 1; colonne <= taille; colonne++) {
 
-                Button button = creerButton(characterList.get(numeroCharacter));
+                // TODO
+                //Button button = creerButton(characterList.get(numeroCharacter));
+                Button button = creerButton(de2List.get(numeroCharacter).getFace().toString());
+
+
                 gridpane.add(button, colonne, ligne);
-                etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
+
+
+                // TODO
+                //etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
+                etatPlateau[ligne-1][colonne-1] = de2List.get(numeroCharacter).getFace().toString();
+
+
                 numeroCharacter++;
             }
         }

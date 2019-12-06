@@ -8,7 +8,6 @@ import java.util.List;
 
 public class De {
 
-
     public static List<String> lireFichierCsv(){
 
         File file = new File("config/des-4x4.csv");
