@@ -1,4 +1,5 @@
 package boggle.ui;
+import boggle.mots.De;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-
+import java.util.List;
 import java.util.Scanner;
 
 public class plateau extends Application {
@@ -24,14 +25,18 @@ public class plateau extends Application {
 //        Scanner sc = new Scanner(System.in);
 //        System.out.println("Saisissez la taille du plateau : ");
 //        int taille = sc.nextInt();
-        int taille  = 3;
+
+        int taille  = 4;
+        List<String> characterList = De.lireFichierCsv();
+
         GridPane gridpane = new GridPane();
+        int numeroCharacter = 0;
         for (int ligne = 1; ligne <= taille; ligne++) {
             for (int colonne = 1; colonne <= taille; colonne++) {
 
-                Button button = creerButton("A");
+                Button button = creerButton(characterList.get(numeroCharacter));
                 gridpane.add(button, colonne, ligne);
-
+                numeroCharacter++;
             }
         }
 
@@ -87,7 +92,7 @@ public class plateau extends Application {
         button.setMinWidth(50);
         button.setMinHeight(50);
         button.setOnMouseClicked(e -> {
-            System.out.println(e.getPickResult());
+            System.out.print(s);
         });
         return button;
     }
