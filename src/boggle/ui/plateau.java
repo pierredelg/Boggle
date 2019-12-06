@@ -16,6 +16,8 @@ import java.util.Scanner;
 
 public class plateau extends Application {
 
+    private String[][] etatPlateau;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,6 +29,7 @@ public class plateau extends Application {
 //        int taille = sc.nextInt();
 
         int taille  = 4;
+        etatPlateau = new String[taille][taille];
         List<String> characterList = De.lireFichierCsv();
 
         GridPane gridpane = new GridPane();
@@ -36,10 +39,18 @@ public class plateau extends Application {
 
                 Button button = creerButton(characterList.get(numeroCharacter));
                 gridpane.add(button, colonne, ligne);
+                etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
                 numeroCharacter++;
             }
         }
 
+        //Utile pour verification du plateau en console :)
+        for(int l = 0; l < taille; l++){
+            for(int c = 0; c < taille; c++){
+                System.out.print(etatPlateau[l][c]+" ");
+            }
+            System.out.println();
+        }
         //On espace le gridpane des bords de la scène
         gridpane.setPadding(new Insets(10,10,10,10));
 
