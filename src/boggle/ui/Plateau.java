@@ -159,7 +159,7 @@ public class Plateau extends Application {
             labelMotEnCours.setText(mot);
             labelMotEnCours.setAlignment(Pos.CENTER);
             buttonListCheck.add(((ligne-1)*taillePlateau)+colonne-1);
-            if(labelMotEnCours.getText().length() > taillePlateau - 1 ){
+            if(labelMotEnCours.getText().length() >= taillePlateau - 1 ){
                 buttonAjouter.setDisable(false);
             }
             disableAllButton();
