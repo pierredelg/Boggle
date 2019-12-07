@@ -16,11 +16,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Plateau extends Application {
 
-    private String[][] etatPlateau;
+    private String[][] etatPlateauChar;
+    private List<Integer> emplacementButton;
     private GridPane gridPane;
     private Label labelMotEnCours;
     private Label labelMotValider;
@@ -29,7 +32,6 @@ public class Plateau extends Application {
     private  Button buttonAjouter;
     private int taillePlateau;
 
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -37,7 +39,8 @@ public class Plateau extends Application {
     public void start(Stage stage) {
 
         taillePlateau = 4;
-        etatPlateau = new String[taillePlateau][taillePlateau];
+        etatPlateauChar = new String[taillePlateau][taillePlateau];
+        emplacementButton = new ArrayList<>();
 
         // TODO
         //List<String> characterList = De.lireFichierCsv();
@@ -53,11 +56,12 @@ public class Plateau extends Application {
 
                 // TODO
                 //Button button = creerButton(characterList.get(numeroCharacter));
-                Button button = creerButton(de2List.get(numeroCharacter).getFace().toString());
+                Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
                 gridPane.add(button, colonne, ligne);
+                emplacementButton.add(((ligne-1)*taillePlateau+colonne-1));
                 // TODO
                 //etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
-                etatPlateau[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
+                etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
                 numeroCharacter++;
             }
         }
@@ -65,7 +69,7 @@ public class Plateau extends Application {
         //Utile pour verification du plateau en console :)
         for (int l = 0; l < taillePlateau; l++) {
             for (int c = 0; c < taillePlateau; c++) {
-                System.out.print(etatPlateau[l][c] + " ");
+                System.out.print(etatPlateauChar[l][c] + " ");
             }
             System.out.println();
         }
@@ -88,7 +92,7 @@ public class Plateau extends Application {
         hboxInformation.setPadding(new Insets(0,20,0,20));
         hboxInformation.setSpacing(20);
 
-        labelMotValider = new Label(" ");
+        labelMotValider = new Label();
         labelMotValider.setMinWidth(168);
 
         //Construction de la Vbox contenant le score
@@ -135,13 +139,12 @@ public class Plateau extends Application {
 
     }
 
-    private Button creerButton(String s) {
+    private Button creerButton(String s,int ligne, int colonne) {
         Button button = new Button(s);
         button.setMinWidth(80);
         button.setMinHeight(80);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
         button.setOnMouseClicked(e -> {
-            System.out.print(s);
             String mot = labelMotEnCours.getText();
             mot += s;
             labelMotEnCours.setText(mot);
@@ -149,8 +152,48 @@ public class Plateau extends Application {
             if(labelMotEnCours.getText().length() > taillePlateau - 1 ){
                 buttonAjouter.setDisable(false);
             }
+            disableAllButton();
+            enableSomeButton(ligne,colonne);
         });
         return button;
+    }
+
+    private void disableAllButton(){
+        for(Integer i : emplacementButton){
+            gridPane.getChildren().get(i).setDisable(true);
+        }
+    }
+
+    private void enableSomeButton(int ligne, int colonne){
+
+        for(int l = -1 ; l < 2; l++){
+            for(int c = colonne==1?0:-1; c < 2; c++){
+
+                if(colonne == taillePlateau){
+                    if(c != 1) {
+                        int ligneBis = ligne + l;
+                        int colonneBis = colonne + c;
+                        int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
+                        if (buttonCible >= 0 && buttonCible <= 15)
+                            gridPane.getChildren().get(buttonCible).setDisable(false);
+                    }
+                }else {
+                    int ligneBis = ligne + l;
+                    int colonneBis = colonne + c;
+                    int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
+                    if (buttonCible >= 0 && buttonCible <= 15)
+                        gridPane.getChildren().get(buttonCible).setDisable(false);
+                }
+            }
+        }
+        gridPane.getChildren().get((ligne - 1) * taillePlateau + colonne - 1).setDisable(true);
+    }
+
+
+    private void enableAllButton(){
+        for(Integer i : emplacementButton){
+            gridPane.getChildren().get(i).setDisable(false);
+        }
     }
 
     private Button creerButtonAjouter(String s) {
@@ -186,6 +229,7 @@ public class Plateau extends Application {
             labelMotEnCours.setText("");
             labelTextInformation.setText("");
             buttonAjouter.setDisable(true);
+            enableAllButton();
         });
         return button;
     }
@@ -206,6 +250,6 @@ public class Plateau extends Application {
     //J'ai mis return true par defaut pour tester l'affichage lorsqu'un mot existe
     // mettre à false pour tester le message d'erreur à titre informatif
     public boolean estDansDictionnaire(String motEnCours){
-        return false;
+        return true;
     }
 }
