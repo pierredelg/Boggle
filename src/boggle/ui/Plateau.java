@@ -230,6 +230,7 @@ public class Plateau extends Application {
                     labelMotEnCours.setText("");
                     buttonListCheck.clear();
                     enableAllButton();
+                    buttonAjouter.setDisable(true);
                 } else {
                     labelTextInformation.setText("Ce mot n'existe pas !");
                 }
