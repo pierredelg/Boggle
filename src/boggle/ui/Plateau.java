@@ -41,7 +41,7 @@ public class Plateau extends Application {
 
     public void start(Stage stage) {
 
-        taillePlateau = 4;
+        taillePlateau = 5;
         etatPlateauChar = new String[taillePlateau][taillePlateau];
         emplacementButton = new ArrayList<>();
 
@@ -186,14 +186,14 @@ public class Plateau extends Application {
                         int ligneBis = ligne + l;
                         int colonneBis = colonne + c;
                         int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
-                        if (buttonCible >= 0 && buttonCible <= 15)
+                        if (buttonCible >= 0 && buttonCible <= taillePlateau*taillePlateau - 1)
                             gridPane.getChildren().get(buttonCible).setDisable(false);
                     }
                 }else {
                     int ligneBis = ligne + l;
                     int colonneBis = colonne + c;
                     int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
-                    if (buttonCible >= 0 && buttonCible <= 15)
+                    if (buttonCible >= 0 && buttonCible <= taillePlateau*taillePlateau - 1)
                         gridPane.getChildren().get(buttonCible).setDisable(false);
                 }
             }
