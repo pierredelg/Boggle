@@ -24,6 +24,7 @@ public class Plateau extends Application {
 
     private String[][] etatPlateauChar;
     private List<Integer> emplacementButton;
+    private List<Integer> buttonListCheck = new ArrayList<>();
     private GridPane gridPane;
     private Label labelMotEnCours;
     private Label labelMotValider;
@@ -58,7 +59,8 @@ public class Plateau extends Application {
                 //Button button = creerButton(characterList.get(numeroCharacter));
                 Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
                 gridPane.add(button, colonne, ligne);
-                emplacementButton.add(((ligne-1)*taillePlateau+colonne-1));
+                emplacementButton.add(((ligne-1)*taillePlateau)+colonne-1);
+
                 // TODO
                 //etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
                 etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
@@ -149,6 +151,7 @@ public class Plateau extends Application {
             mot += s;
             labelMotEnCours.setText(mot);
             labelMotEnCours.setAlignment(Pos.CENTER);
+            buttonListCheck.add(((ligne-1)*taillePlateau)+colonne-1);
             if(labelMotEnCours.getText().length() > taillePlateau - 1 ){
                 buttonAjouter.setDisable(false);
             }
@@ -185,6 +188,9 @@ public class Plateau extends Application {
                         gridPane.getChildren().get(buttonCible).setDisable(false);
                 }
             }
+        }
+        for(Integer i: buttonListCheck){
+            gridPane.getChildren().get(i).setDisable(true);
         }
         gridPane.getChildren().get((ligne - 1) * taillePlateau + colonne - 1).setDisable(true);
     }
