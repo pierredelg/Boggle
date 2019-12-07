@@ -24,6 +24,7 @@ public class Plateau extends Application {
 
     private String[][] etatPlateauChar;
     private List<Integer> emplacementButton;
+    private List<String> listMotValider = new ArrayList<>();
     private List<Integer> buttonListCheck = new ArrayList<>();
     private GridPane gridPane;
     private Label labelMotEnCours;
@@ -208,20 +209,26 @@ public class Plateau extends Application {
         button.setMinHeight(50);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
-
+            if(!listMotValider.contains(labelMotEnCours.getText())) {
                 if (estDansDictionnaire(labelMotEnCours.getText())) {
                     String toutLesMotsValider = labelMotValider.getText();
                     toutLesMotsValider += labelMotEnCours.getText() + "\n";
                     labelMotValider.setText(toutLesMotsValider);
                     labelMotValider.setAlignment(Pos.CENTER);
                     labelMotValider.setStyle("-fx-font-weight: bold");
-                    labelMotEnCours.setText(" ");
+                    listMotValider.add(labelMotEnCours.getText());
+                    labelMotEnCours.setText("");
+                    buttonListCheck.clear();
+                    enableAllButton();
                 } else {
                     labelTextInformation.setText("Ce mot n'existe pas !");
-                    labelTextInformation.setAlignment(Pos.CENTER);
-                    labelTextInformation.setStyle("-fx-font-size: 18; -fx-font-weight: bold");
-                    labelTextInformation.setTextFill(Color.RED);
                 }
+            }else{
+                labelTextInformation.setText("Ce mot est déjà pris !");
+            }
+            labelTextInformation.setAlignment(Pos.CENTER);
+            labelTextInformation.setStyle("-fx-font-size: 18; -fx-font-weight: bold");
+            labelTextInformation.setTextFill(Color.RED);
         });
         return button;
     }
