@@ -21,10 +21,13 @@ import java.util.List;
 public class Plateau extends Application {
 
     private String[][] etatPlateau;
+    private GridPane gridPane;
     private Label labelMotEnCours;
     private Label labelMotValider;
     private Label labelTextInformation;
     private Label labelJoueur;
+    private  Button buttonAjouter;
+    private int taillePlateau;
 
 
     public static void main(String[] args) {
@@ -33,8 +36,8 @@ public class Plateau extends Application {
 
     public void start(Stage stage) {
 
-        int taille = 4;
-        etatPlateau = new String[taille][taille];
+        taillePlateau = 4;
+        etatPlateau = new String[taillePlateau][taillePlateau];
 
         // TODO
         //List<String> characterList = De.lireFichierCsv();
@@ -42,16 +45,16 @@ public class Plateau extends Application {
         config.chargerConfigDe();
         List<De2> de2List = config.de2List;
 
-        GridPane gridpane = new GridPane();
+        gridPane = new GridPane();
         //On espace le gridpane des bords de la scène
         int numeroCharacter = 0;
-        for (int ligne = 1; ligne <= taille; ligne++) {
-            for (int colonne = 1; colonne <= taille; colonne++) {
+        for (int ligne = 1; ligne <= taillePlateau; ligne++) {
+            for (int colonne = 1; colonne <= taillePlateau; colonne++) {
 
                 // TODO
                 //Button button = creerButton(characterList.get(numeroCharacter));
                 Button button = creerButton(de2List.get(numeroCharacter).getFace().toString());
-                gridpane.add(button, colonne, ligne);
+                gridPane.add(button, colonne, ligne);
                 // TODO
                 //etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
                 etatPlateau[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
@@ -60,15 +63,15 @@ public class Plateau extends Application {
         }
 
         //Utile pour verification du plateau en console :)
-        for (int l = 0; l < taille; l++) {
-            for (int c = 0; c < taille; c++) {
+        for (int l = 0; l < taillePlateau; l++) {
+            for (int c = 0; c < taillePlateau; c++) {
                 System.out.print(etatPlateau[l][c] + " ");
             }
             System.out.println();
         }
 
         labelTextInformation = new Label();
-        labelTextInformation.setMinWidth(taille*80);
+        labelTextInformation.setMinWidth(taillePlateau*80);
         labelTextInformation.setMinHeight(50);
 
         //label pour nom du joueur
@@ -95,16 +98,17 @@ public class Plateau extends Application {
 
         //construction de la Hbox contenant les buttons et le score
         HBox hboxButton = new HBox();
-        hboxButton.getChildren().addAll(gridpane, vboxScore);
+        hboxButton.getChildren().addAll(gridPane, vboxScore);
         hboxButton.setPadding(new Insets(10,20,20,20));
         hboxButton.setSpacing(20);
 
         labelMotEnCours = new Label();
-        labelMotEnCours.setMinWidth(80 * taille);
+        labelMotEnCours.setMinWidth(80 * taillePlateau);
         labelMotEnCours.setMinHeight(50);
         labelMotEnCours.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
-        Button buttonAjouter = creerButtonAjouter("Ajouter");
+        buttonAjouter = creerButtonAjouter("Ajouter");
+        buttonAjouter.setDisable(true);
         Button buttonSupprimer = creerButtonSupprimer("Supprimer");
 
         HBox hBoxButtonAction = new HBox();
@@ -121,7 +125,7 @@ public class Plateau extends Application {
         VBox vboxPrincipale = new VBox();
         vboxPrincipale.getChildren().addAll(hboxInformation,hboxButton, hboxMot);
 
-        Scene scene = new Scene(vboxPrincipale, (taille * 80) + 230, (taille * 80) + 160);
+        Scene scene = new Scene(vboxPrincipale, (taillePlateau * 80) + 230, (taillePlateau * 80) + 160);
 
 
         stage.setTitle("Plateau de jeu BOGGLE");
@@ -142,6 +146,9 @@ public class Plateau extends Application {
             mot += s;
             labelMotEnCours.setText(mot);
             labelMotEnCours.setAlignment(Pos.CENTER);
+            if(labelMotEnCours.getText().length() > taillePlateau - 1 ){
+                buttonAjouter.setDisable(false);
+            }
         });
         return button;
     }
@@ -153,20 +160,19 @@ public class Plateau extends Application {
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
 
-            if(estDansDictionnaire(labelMotEnCours.getText())){
-                String toutLesMotsValider = labelMotValider.getText();
-                toutLesMotsValider += labelMotEnCours.getText()+"\n";
-                labelMotValider.setText(toutLesMotsValider);
-                labelMotValider.setAlignment(Pos.CENTER);
-                labelMotValider.setStyle("-fx-font-weight: bold");
-                labelMotEnCours.setText(" ");
-            }else{
-                labelTextInformation.setText("Ce mot n'existe pas !");
-                labelTextInformation.setAlignment(Pos.CENTER);
-                labelTextInformation.setStyle("-fx-font-size: 18; -fx-font-weight: bold");
-                labelTextInformation.setTextFill(Color.RED);
-            }
-
+                if (estDansDictionnaire(labelMotEnCours.getText())) {
+                    String toutLesMotsValider = labelMotValider.getText();
+                    toutLesMotsValider += labelMotEnCours.getText() + "\n";
+                    labelMotValider.setText(toutLesMotsValider);
+                    labelMotValider.setAlignment(Pos.CENTER);
+                    labelMotValider.setStyle("-fx-font-weight: bold");
+                    labelMotEnCours.setText(" ");
+                } else {
+                    labelTextInformation.setText("Ce mot n'existe pas !");
+                    labelTextInformation.setAlignment(Pos.CENTER);
+                    labelTextInformation.setStyle("-fx-font-size: 18; -fx-font-weight: bold");
+                    labelTextInformation.setTextFill(Color.RED);
+                }
         });
         return button;
     }
@@ -177,7 +183,9 @@ public class Plateau extends Application {
         button.setMinHeight(50);
         button.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
-            labelMotEnCours.setText(" ");
+            labelMotEnCours.setText("");
+            labelTextInformation.setText("");
+            buttonAjouter.setDisable(true);
         });
         return button;
     }
