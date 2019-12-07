@@ -1,5 +1,8 @@
 package boggle.mots;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List ;
 
@@ -92,8 +95,25 @@ public class ArbreLexical {
         <code>o</code> n'est pas une instance de String ou si le mot
         n'est pas dans l'arbre lexical. */
     public boolean contient(String word) {
-        // à compléter
-        return false ;
+        if(word.length() != 0) {
+        	int index = indexOfFirstLetter(word);
+        	if (fils[index] == null) {
+				return false;
+			}
+        	String firstLetterLess = word.substring(1);
+        	return fils[index].contient(firstLetterLess);
+        }else {
+        	return estMot();
+        }
+    }
+    
+    private static int indexOfFirstLetter(String word) {
+		char firstCharacter = 'a';
+		int firstChar = (int) firstCharacter;
+		char currentCharacter = word.charAt(0);
+		int currentChar = (int) currentCharacter;
+		int index = currentChar - firstChar;
+    	return index;
     }
 
     /** Ajoute à la liste <code>resultat<code> tous les mots de
@@ -108,9 +128,27 @@ public class ArbreLexical {
     /** Crée un arbre lexical qui contient tous les mots du fichier
      * spécifié. */
     public static ArbreLexical lireMots(String fichier) {
-        // à compléter
-        return null ;
+    	BufferedReader reader;
+        ArbreLexical tree = new ArbreLexical();
+        try
+        {
+            reader = new BufferedReader(new FileReader(fichier));
+            String mot = reader.readLine();
+            while (mot != null)
+            {	//tant qu'il y a un mot je l'ajoute à l'arbre.
+                tree.ajouter(mot);
+                mot = reader.readLine();
+            }
+            reader.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        return tree;
     }
+    
     private boolean estUneFeuille(){
         return this.fils == null || this.fils.length == 0;
     }
