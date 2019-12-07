@@ -31,7 +31,8 @@ public class Plateau extends Application {
     private Label labelMotValider;
     private Label labelTextInformation;
     private Label labelJoueur;
-    private  Button buttonAjouter;
+    private Button buttonAjouter;
+    private Button buttonSupprimer;
     private int taillePlateau;
 
     public static void main(String[] args) {
@@ -81,13 +82,12 @@ public class Plateau extends Application {
         labelTextInformation.setMinWidth(taillePlateau*80);
         labelTextInformation.setMinHeight(50);
 
-        //label pour nom du joueur
+        //label pour nom du joueur (pour l'emplacement) => donc test
         labelJoueur = new Label("Joueur 1");
-        labelJoueur.setMinWidth(150);
+        labelJoueur.setMinWidth(170);
         labelJoueur.setMinHeight(50);
         labelJoueur.setAlignment(Pos.CENTER);
         labelJoueur.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
-
 
         //Construction de la Hbox contenant l'information (partie et joueur)
         HBox hboxInformation = new HBox();
@@ -95,6 +95,7 @@ public class Plateau extends Application {
         hboxInformation.setPadding(new Insets(0,20,0,20));
         hboxInformation.setSpacing(20);
 
+        //Construction du label pour afficher les mots validés
         labelMotValider = new Label();
         labelMotValider.setMinWidth(168);
 
@@ -109,15 +110,18 @@ public class Plateau extends Application {
         hboxButton.setPadding(new Insets(10,20,20,20));
         hboxButton.setSpacing(20);
 
+        //Construction du label pour afficher le mot en cours
         labelMotEnCours = new Label();
         labelMotEnCours.setMinWidth(80 * taillePlateau);
         labelMotEnCours.setMinHeight(50);
         labelMotEnCours.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
+        //Création du boutton ajouter
         buttonAjouter = creerButtonAjouter("Ajouter");
         buttonAjouter.setDisable(true);
-        Button buttonSupprimer = creerButtonSupprimer("Supprimer");
+        buttonSupprimer = creerButtonSupprimer("Supprimer");
 
+        //Contruction d'une hbox contenant les bouttons ajout et suppression
         HBox hBoxButtonAction = new HBox();
         hBoxButtonAction.setSpacing(8);
         hBoxButtonAction.getChildren().addAll(buttonAjouter,buttonSupprimer);
@@ -132,9 +136,10 @@ public class Plateau extends Application {
         VBox vboxPrincipale = new VBox();
         vboxPrincipale.getChildren().addAll(hboxInformation,hboxButton, hboxMot);
 
+        //Construction de la scéne
         Scene scene = new Scene(vboxPrincipale, (taillePlateau * 80) + 230, (taillePlateau * 80) + 160);
 
-
+        //Modification du titre de la scène
         stage.setTitle("Plateau de jeu BOGGLE");
         stage.setScene(scene);
         stage.setResizable(false);
@@ -142,6 +147,7 @@ public class Plateau extends Application {
 
     }
 
+    //Permet la création de boutton
     private Button creerButton(String s,int ligne, int colonne) {
         Button button = new Button(s);
         button.setMinWidth(80);
@@ -162,12 +168,14 @@ public class Plateau extends Application {
         return button;
     }
 
+    //Permet de désactiver tout les bouttons du gridpane
     private void disableAllButton(){
         for(Integer i : emplacementButton){
             gridPane.getChildren().get(i).setDisable(true);
         }
     }
 
+    //Permet d'activer certains boutton
     private void enableSomeButton(int ligne, int colonne){
 
         for(int l = -1 ; l < 2; l++){
@@ -197,12 +205,14 @@ public class Plateau extends Application {
     }
 
 
+    //Permet d'activer tout les bouttons du gridpane
     private void enableAllButton(){
         for(Integer i : emplacementButton){
             gridPane.getChildren().get(i).setDisable(false);
         }
     }
 
+    //Permet la création du boutton ajouter ainsi q'un traitement particulier
     private Button creerButtonAjouter(String s) {
         Button button = new Button(s);
         button.setMinWidth(50);
@@ -233,6 +243,7 @@ public class Plateau extends Application {
         return button;
     }
 
+    //Permet la création du boutton supprimer ainsi qu'un traitement particulier
     private Button creerButtonSupprimer(String s) {
         Button button = new Button(s);
         button.setMinWidth(50);
@@ -242,6 +253,7 @@ public class Plateau extends Application {
             labelMotEnCours.setText("");
             labelTextInformation.setText("");
             buttonAjouter.setDisable(true);
+            buttonListCheck.clear();
             enableAllButton();
         });
         return button;
