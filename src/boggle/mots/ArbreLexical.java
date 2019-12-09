@@ -121,7 +121,10 @@ public class ArbreLexical {
      * @return <code>true</code> si <code>resultat</code> a été
      * modifié, <code>false</code> sinon.*/
     public boolean motsCommencantPar(String prefixe, List<String> resultat) {
-        // à compléter
+//        int letter = indexOfFirstLetter(prefixe);
+//        ArbreLexical arbreLexical = fils[letter];
+//        String prefixeLetter = prefixe.substring(1);
+        
         return false ;
     }
     
@@ -133,11 +136,11 @@ public class ArbreLexical {
         try
         {
             reader = new BufferedReader(new FileReader(fichier));
-            String mot = reader.readLine();
-            while (mot != null)
+            String word = reader.readLine();
+            while (word != null)
             {	//tant qu'il y a un mot je l'ajoute à l'arbre.
-                tree.ajouter(mot);
-                mot = reader.readLine();
+                tree.ajouter(word);
+                word = reader.readLine();
             }
             reader.close();
         }
