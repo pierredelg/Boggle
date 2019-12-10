@@ -56,6 +56,7 @@ public class Plateau extends Application {
 
     public void startBienvenue(Stage stage) {
 
+        //new gestiontour et celui la qui renvoi la scene
         taillePlateau = 5;
         etatPlateauChar = new String[taillePlateau][taillePlateau];
         emplacementButton = new ArrayList<>();
