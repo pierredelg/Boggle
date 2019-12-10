@@ -39,7 +39,22 @@ public class Plateau extends Application {
         launch(args);
     }
 
-    public void start(Stage stage) {
+    public  void start(Stage stage){
+        Label bonjour = new Label("bonjour");
+        Button button = creerButtonBienvenue("Bienvenue",stage);
+        //Contruction de la Vbox contenant le tout
+        VBox vboxPrincipale = new VBox();
+        vboxPrincipale.getChildren().addAll(bonjour,button);
+        Scene scene = new Scene(vboxPrincipale, (taillePlateau * 80) + 230, (taillePlateau * 80) + 160);
+
+        //Modification du titre de la scène
+        stage.setTitle("Bienvenue sur boggle");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public void startBienvenue(Stage stage) {
 
         taillePlateau = 5;
         etatPlateauChar = new String[taillePlateau][taillePlateau];
@@ -161,6 +176,18 @@ public class Plateau extends Application {
             }
             disableAllButton();
             enableSomeButton(ligne,colonne);
+        });
+        return button;
+    }
+
+    //Permet la création de boutton
+    private Button creerButtonBienvenue(String s,Stage stage) {
+        Button button = new Button(s);
+        button.setMinWidth(80);
+        button.setMinHeight(80);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+           startBienvenue(stage);
         });
         return button;
     }
