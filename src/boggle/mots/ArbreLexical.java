@@ -3,7 +3,6 @@ package boggle.mots;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List ;
 
 /** La classe ArbreLexical permet de stocker de façon compacte et
