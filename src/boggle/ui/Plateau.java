@@ -46,7 +46,6 @@ public class Plateau extends Application {
         emplacementButton = new ArrayList<>();
 
         // TODO
-        //List<String> characterList = De.lireFichierCsv();
         Config config = new Config();
         config.chargerConfigDe();
         List<De2> de2List = config.de2List;
@@ -58,13 +57,11 @@ public class Plateau extends Application {
             for (int colonne = 1; colonne <= taillePlateau; colonne++) {
 
                 // TODO
-                //Button button = creerButton(characterList.get(numeroCharacter));
                 Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
                 gridPane.add(button, colonne, ligne);
                 emplacementButton.add(((ligne-1)*taillePlateau)+colonne-1);
 
                 // TODO
-                //etatPlateau[ligne-1][colonne-1] = characterList.get(numeroCharacter);
                 etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
                 numeroCharacter++;
             }
