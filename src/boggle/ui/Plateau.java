@@ -47,7 +47,7 @@ public class Plateau extends Application {
         //Contruction de la Vbox contenant le tout
         VBox vboxPrincipale = new VBox();
         vboxPrincipale.getChildren().addAll(bonjour,button);
-        Scene scene = new Scene(vboxPrincipale, (taillePlateau * 80) + 230, (taillePlateau * 80) + 160);
+        Scene scene = new Scene(vboxPrincipale, 500,500);
 
         //Modification du titre de la scène
         stage.setTitle("Bienvenue sur boggle");
