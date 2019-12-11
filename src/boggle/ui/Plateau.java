@@ -1,5 +1,6 @@
 package boggle.ui;
 
+import boggle.mots.ArbreLexicalLudo;
 import boggle.mots.Config;
 import boggle.mots.De2;
 import javafx.application.Application;
@@ -16,6 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -238,26 +240,30 @@ public class Plateau extends Application {
     }
 
     //Permet la création du boutton ajouter ainsi q'un traitement particulier
-    private Button creerButtonAjouter(String s) {
+    private Button creerButtonAjouter(String s){
         Button button = new Button(s);
         button.setMinWidth(50);
         button.setMinHeight(50);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
             if(!listMotValider.contains(labelMotEnCours.getText())) {
-                if (estDansDictionnaire(labelMotEnCours.getText())) {
-                    String toutLesMotsValider = labelMotValider.getText();
-                    toutLesMotsValider += labelMotEnCours.getText() + "\n";
-                    labelMotValider.setText(toutLesMotsValider);
-                    labelMotValider.setAlignment(Pos.CENTER);
-                    labelMotValider.setStyle("-fx-font-weight: bold");
-                    listMotValider.add(labelMotEnCours.getText());
-                    labelMotEnCours.setText("");
-                    buttonListCheck.clear();
-                    enableAllButton();
-                    buttonAjouter.setDisable(true);
-                } else {
-                    labelTextInformation.setText("Ce mot n'existe pas !");
+                try {
+                    if (estDansDictionnaire(labelMotEnCours.getText())) {
+                        String toutLesMotsValider = labelMotValider.getText();
+                        toutLesMotsValider += labelMotEnCours.getText() + "\n";
+                        labelMotValider.setText(toutLesMotsValider);
+                        labelMotValider.setAlignment(Pos.CENTER);
+                        labelMotValider.setStyle("-fx-font-weight: bold");
+                        listMotValider.add(labelMotEnCours.getText());
+                        labelMotEnCours.setText("");
+                        buttonListCheck.clear();
+                        enableAllButton();
+                        buttonAjouter.setDisable(true);
+                    } else {
+                        labelTextInformation.setText("Ce mot n'existe pas !");
+                    }
+                } catch (FileNotFoundException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }else{
                 labelTextInformation.setText("Ce mot est déjà pris !");
@@ -295,12 +301,9 @@ public class Plateau extends Application {
         grid.getChildren().addAll(text);
     }
 
-    //TODO
-    //verifier si le mot en cours est dans le dictionnaire.
-    //retourne vrai si présent. Faux sinon.
-    //J'ai mis return true par defaut pour tester l'affichage lorsqu'un mot existe
-    // mettre à false pour tester le message d'erreur à titre informatif
-    public boolean estDansDictionnaire(String motEnCours){
-        return true;
+
+    public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
+        ArbreLexicalLudo arbre = ArbreLexicalLudo.lireMots("./config/dict-fr.txt");
+        return arbre.contient(motEnCours);
     }
 }
