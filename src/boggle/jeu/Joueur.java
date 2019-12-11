@@ -1,4 +1,4 @@
-package boogle.jeu;
+package boggle.jeu;
 
 public class Joueur {
 
