@@ -2,6 +2,7 @@ package boggle.mots;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +40,14 @@ public class ArbreLexicalLudo {
      * <code>false</code> sinon
      */
     public boolean ajouter(String word) {
+        //Si on arrive à la fin du mot on passe le booleen à true et on retourne true
         if (word.length() == 0) {
             estMot = true;
             return true;
         } else {
+            //Sinon on crée l'arbre fils avec le mot grace à la méthode suivant
             ArbreLexicalLudo fils = suivant(word, true);
+            //On ajoute le mot en retirant la premiere lettre à l'arbre fils
             return fils != null && fils.ajouter(word.substring(1));
         }
     }
@@ -57,10 +61,14 @@ public class ArbreLexicalLudo {
      * n'est pas dans l'arbre lexical.
      */
     public boolean contient(String word) {
+        //Si on est à la fin du mot on retourne le booleen estMot
         if (word.length() == 0) {
             return estMot;
         } else {
+            //Sinon on récupere l'arbre fils à l'indice de la premiere lettre
             ArbreLexicalLudo fils = suivant(word, false);
+            //On vérifie si l'arbre fils contient le mot à partir de la lettre suivante
+            //Si l'arbre fils est null on retourne faux
             return fils != null && fils.contient(word.substring(1));
         }
     }
@@ -110,16 +118,23 @@ public class ArbreLexicalLudo {
      * return le fils suivant pour le parcours de l'arbre
      *
      * @param word mots a parcourir
+     * @param creer booleen pour savoir si on parcourt ou si on crée un arbre
      * @return null si pas une lettre sinon le fils suivant
      */
     private ArbreLexicalLudo suivant(String word, boolean creer) {
+
+        //On récupere l'index de la premiere lettre du mot
         int idx = numeroAlphabetic(word);
+        //Si l'index vaut -1 c'est que ce n'est pas une lettre
+        //On retourne null
         if (idx < 0) {
             return null;
         }
+        //Si l'arbre fils n'existe pas dans le tableau alors on le crée
         if (this.fils[idx] == null && creer) {
             this.fils[idx] = new ArbreLexicalLudo();
         }
+        //On retourne l'arbre fils à l'indice de la lettre
         return this.fils[idx];
     }
 
@@ -151,7 +166,15 @@ public class ArbreLexicalLudo {
         BufferedReader reader = new BufferedReader(new FileReader(fichier));
 
         final ArbreLexicalLudo arbre = new ArbreLexicalLudo();
-        reader.lines().forEach(arbre::ajouter);
+        String ligne;
+        try {
+            while((ligne = reader.readLine()) != null){
+                arbre.ajouter(ligne);
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
         return arbre;
     }
 
