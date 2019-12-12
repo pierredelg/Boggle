@@ -132,7 +132,11 @@ public class GrilleLettres extends GridPane {
         while ((ligne = bufferedReader.readLine()) != null) {
             String[] split = ligne.split("=");
             if (split[0].equalsIgnoreCase("taille_du_plateau")) {
-                this.taillePlateau = Integer.parseInt(split[1]);
+                int taille = Integer.parseInt(split[1]);
+                if(taille >= 4 && taille <= 5)
+                    this.taillePlateau = taille;
+                else
+                    this.taillePlateau = 4;
                 etatPlateauChar = new String[taillePlateau][taillePlateau];
             }
         }
