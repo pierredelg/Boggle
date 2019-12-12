@@ -31,6 +31,6 @@ public class Joueur {
 
 	@Override
 	public String toString() {
-		return "Le joueur " + name + " obtient un score de " + score + " points";
+		return name + " obtient un score de " + score + " points";
 	}
 }

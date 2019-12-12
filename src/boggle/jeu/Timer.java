@@ -16,8 +16,8 @@ import javafx.util.Duration;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = 1;
-    private static final Integer STARTSECONDE = 6;
+    private static final Integer STARTMINUTE = 0;
+    private static final Integer STARTSECONDE = 4;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;

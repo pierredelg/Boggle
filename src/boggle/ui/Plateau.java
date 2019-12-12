@@ -135,8 +135,37 @@ public class Plateau extends Application implements EtatJeuListener {
     }
 
     @Override
-    public void finDuJeu() {
+    public void finDuJeu(List<Tour> tourList) {
 
+        stage.close();
+
+        Label labelScore = new Label();
+        labelScore.setMinWidth(520);
+        labelScore.setMinHeight(tourList.size() * 100);
+        labelScore.setAlignment(Pos.CENTER);
+        labelScore.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+
+        String result = "";
+        //Récupération des scores
+        for (Tour tour : tourList)
+            result += tour.getJoueur().toString() + " \n\n";
+
+        labelScore.setText(result);
+
+        Button buttonRecommencer = creerButtonRecommencer("Recommencer");
+        buttonRecommencer.setMinWidth(520);
+        buttonRecommencer.setMinHeight(50);
+
+        //Contruction de la Vbox contenant le score et le boutton recommencer
+        VBox vboxPrincipale = new VBox();
+        vboxPrincipale.getChildren().addAll(labelScore, buttonRecommencer);
+        Scene scene = new Scene(vboxPrincipale, 520, tourList.size() * 100 + 50);
+
+        //Modification du titre de la scène
+        stage.setTitle("Fin du jeu");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     //Permet la création de boutton
@@ -151,6 +180,16 @@ public class Plateau extends Application implements EtatJeuListener {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        });
+        return button;
+    }
+
+    //Permet la création de boutton
+    private Button creerButtonRecommencer(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            start(stage);
         });
         return button;
     }

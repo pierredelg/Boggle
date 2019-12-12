@@ -29,13 +29,6 @@ public class GestionTour implements NextTourListener {
         }
     }
 
-    public List<Tour> getTourList() {
-        return tourList;
-    }
-
-    public void setTourList(List<Tour> tourList) {
-        this.tourList = tourList;
-    }
 
     public void start() {
         nextTour();
@@ -47,7 +40,7 @@ public class GestionTour implements NextTourListener {
         if (tourList.size() > tour) {
             etatJeuListener.setTour(tourList.get(tour));
         } else {
-            etatJeuListener.finDuJeu();
+            etatJeuListener.finDuJeu(tourList);
         }
     }
 
