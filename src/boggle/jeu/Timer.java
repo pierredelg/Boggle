@@ -19,13 +19,14 @@ import java.io.IOException;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = 3;
-    private static final Integer STARTSECONDE = 0;
+    private static final Integer STARTMINUTE = 0;
+    private static final Integer STARTSECONDE = 6;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;
     private Integer timeMinutes = STARTMINUTE;
     private static GrilleLettres grilleLettres;
+    private static Button buttonSupprimer;
 
     private TourListener tourListener;
 
@@ -52,6 +53,7 @@ public class Timer {
             public void handle(ActionEvent event) {
                 button.setDisable(true);
                 Timer.grilleLettres.enableAllButton();
+                Timer.buttonSupprimer.setDisable(false);
                 if (timeline != null) {
                     timeline.stop();
                 }
@@ -114,5 +116,9 @@ public class Timer {
 
     public static void setGrilleLettres(GrilleLettres grilleLettres) {
         Timer.grilleLettres = grilleLettres;
+    }
+
+    public static void setButtonSupprimer(Button buttonSupprimer) {
+        Timer.buttonSupprimer = buttonSupprimer;
     }
 }

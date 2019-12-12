@@ -111,7 +111,8 @@ public class Plateau extends Application implements EtatJeuListener {
         grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter",tour));
         grilleLettres.getButtonAjouter().setDisable(true);
         buttonSupprimer = creerButtonSupprimer("Supprimer");
-
+        buttonSupprimer.setDisable(true);
+        Timer.setButtonSupprimer(buttonSupprimer);
         //Contruction d'une hbox contenant les bouttons ajout et suppression
         HBox hBoxButtonAction = new HBox();
         hBoxButtonAction.setSpacing(8);
