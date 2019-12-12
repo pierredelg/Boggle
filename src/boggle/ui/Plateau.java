@@ -3,6 +3,7 @@ package boggle.ui;
 import boggle.mots.ArbreLexicalLudo;
 import boggle.mots.Config;
 import boggle.mots.De2;
+import boggle.mots.GrilleLettres;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,29 +25,26 @@ import java.util.List;
 
 public class Plateau extends Application {
 
-    private String[][] etatPlateauChar;
-    private List<Integer> emplacementButton;
+
     private List<String> listMotValider = new ArrayList<>();
-    private List<Integer> buttonListCheck = new ArrayList<>();
     private GridPane gridPane;
-    private Label labelMotEnCours;
     private Label labelMotValider;
     private Label labelTextInformation;
     private Label labelJoueur;
-    private Button buttonAjouter;
     private Button buttonSupprimer;
-    private int taillePlateau;
+    private GrilleLettres grilleLettres;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     public  void start(Stage stage){
-        Label bonjour = new Label("bonjour");
-        Button button = creerButtonBienvenue("Bienvenue",stage);
-        //Contruction de la Vbox contenant le tout
+        Text text = new Text("bonjour");
+        Button buttonAccesConfig = creerButtonBienvenue("Config",stage);
+
+        //Contruction de la Vbox contenant le text et le boutton
         VBox vboxPrincipale = new VBox();
-        vboxPrincipale.getChildren().addAll(bonjour,button);
+        vboxPrincipale.getChildren().addAll(text,buttonAccesConfig);
         Scene scene = new Scene(vboxPrincipale, 500,500);
 
         //Modification du titre de la scène
@@ -58,43 +56,12 @@ public class Plateau extends Application {
 
     public void startBienvenue(Stage stage) {
 
-        //new gestiontour et celui la qui renvoi la scene
-        taillePlateau = 5;
-        etatPlateauChar = new String[taillePlateau][taillePlateau];
-        emplacementButton = new ArrayList<>();
 
-        // TODO
-        Config config = new Config();
-        config.chargerConfigDe();
-        List<De2> de2List = config.de2List;
-
-        gridPane = new GridPane();
-        //On espace le gridpane des bords de la scène
-        int numeroCharacter = 0;
-        for (int ligne = 1; ligne <= taillePlateau; ligne++) {
-            for (int colonne = 1; colonne <= taillePlateau; colonne++) {
-
-                // TODO
-                Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
-                gridPane.add(button, colonne, ligne);
-                emplacementButton.add(((ligne-1)*taillePlateau)+colonne-1);
-
-                // TODO
-                etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
-                numeroCharacter++;
-            }
-        }
-
-        //Utile pour verification du plateau en console :)
-        for (int l = 0; l < taillePlateau; l++) {
-            for (int c = 0; c < taillePlateau; c++) {
-                System.out.print(etatPlateauChar[l][c] + " ");
-            }
-            System.out.println();
-        }
+        this.grilleLettres = new GrilleLettres();
+        gridPane = grilleLettres.getGridPane();
 
         labelTextInformation = new Label();
-        labelTextInformation.setMinWidth(taillePlateau*80);
+        labelTextInformation.setMinWidth(grilleLettres.getTaillePlateau() * 80);
         labelTextInformation.setMinHeight(50);
 
         //label pour nom du joueur (pour l'emplacement) => donc test
@@ -125,25 +92,19 @@ public class Plateau extends Application {
         hboxButton.setPadding(new Insets(10,20,20,20));
         hboxButton.setSpacing(20);
 
-        //Construction du label pour afficher le mot en cours
-        labelMotEnCours = new Label();
-        labelMotEnCours.setMinWidth(80 * taillePlateau);
-        labelMotEnCours.setMinHeight(50);
-        labelMotEnCours.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
-        //Création du boutton ajouter
-        buttonAjouter = creerButtonAjouter("Ajouter");
-        buttonAjouter.setDisable(true);
+        grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter"));
+        grilleLettres.getButtonAjouter().setDisable(true);
         buttonSupprimer = creerButtonSupprimer("Supprimer");
 
         //Contruction d'une hbox contenant les bouttons ajout et suppression
         HBox hBoxButtonAction = new HBox();
         hBoxButtonAction.setSpacing(8);
-        hBoxButtonAction.getChildren().addAll(buttonAjouter,buttonSupprimer);
+        hBoxButtonAction.getChildren().addAll(grilleLettres.getButtonAjouter(),buttonSupprimer);
 
         //Construction de la Hbox contenant le mot en cours et les buttons ajouter et supprimer
         HBox hboxMot = new HBox();
-        hboxMot.getChildren().addAll(labelMotEnCours, hBoxButtonAction);
+        hboxMot.getChildren().addAll(grilleLettres.getLabelMotEnCours(), hBoxButtonAction);
         hboxMot.setPadding(new Insets(0,20,0,20));
         hboxMot.setSpacing(20);
 
@@ -152,7 +113,7 @@ public class Plateau extends Application {
         vboxPrincipale.getChildren().addAll(hboxInformation,hboxButton, hboxMot);
 
         //Construction de la scéne
-        Scene scene = new Scene(vboxPrincipale, (taillePlateau * 80) + 230, (taillePlateau * 80) + 160);
+        Scene scene = new Scene(vboxPrincipale, (grilleLettres.getTaillePlateau() * 80) + 230, (grilleLettres.getTaillePlateau() * 80) + 160);
 
         //Modification du titre de la scène
         stage.setTitle("Plateau de jeu BOGGLE");
@@ -160,27 +121,6 @@ public class Plateau extends Application {
         stage.setResizable(false);
         stage.show();
 
-    }
-
-    //Permet la création de boutton
-    private Button creerButton(String s,int ligne, int colonne) {
-        Button button = new Button(s);
-        button.setMinWidth(80);
-        button.setMinHeight(80);
-        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
-        button.setOnMouseClicked(e -> {
-            String mot = labelMotEnCours.getText();
-            mot += s;
-            labelMotEnCours.setText(mot);
-            labelMotEnCours.setAlignment(Pos.CENTER);
-            buttonListCheck.add(((ligne-1)*taillePlateau)+colonne-1);
-            if(labelMotEnCours.getText().length() >= taillePlateau - 1 ){
-                buttonAjouter.setDisable(false);
-            }
-            disableAllButton();
-            enableSomeButton(ligne,colonne);
-        });
-        return button;
     }
 
     //Permet la création de boutton
@@ -195,49 +135,7 @@ public class Plateau extends Application {
         return button;
     }
 
-    //Permet de désactiver tout les bouttons du gridpane
-    private void disableAllButton(){
-        for(Integer i : emplacementButton){
-            gridPane.getChildren().get(i).setDisable(true);
-        }
-    }
 
-    //Permet d'activer certains boutton
-    private void enableSomeButton(int ligne, int colonne){
-
-        for(int l = -1 ; l < 2; l++){
-            for(int c = colonne==1?0:-1; c < 2; c++){
-
-                if(colonne == taillePlateau){
-                    if(c != 1) {
-                        int ligneBis = ligne + l;
-                        int colonneBis = colonne + c;
-                        int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
-                        if (buttonCible >= 0 && buttonCible <= taillePlateau*taillePlateau - 1)
-                            gridPane.getChildren().get(buttonCible).setDisable(false);
-                    }
-                }else {
-                    int ligneBis = ligne + l;
-                    int colonneBis = colonne + c;
-                    int buttonCible = ((ligneBis - 1) * taillePlateau) + colonneBis - 1;
-                    if (buttonCible >= 0 && buttonCible <= taillePlateau*taillePlateau - 1)
-                        gridPane.getChildren().get(buttonCible).setDisable(false);
-                }
-            }
-        }
-        for(Integer i: buttonListCheck){
-            gridPane.getChildren().get(i).setDisable(true);
-        }
-        gridPane.getChildren().get((ligne - 1) * taillePlateau + colonne - 1).setDisable(true);
-    }
-
-
-    //Permet d'activer tout les bouttons du gridpane
-    private void enableAllButton(){
-        for(Integer i : emplacementButton){
-            gridPane.getChildren().get(i).setDisable(false);
-        }
-    }
 
     //Permet la création du boutton ajouter ainsi q'un traitement particulier
     private Button creerButtonAjouter(String s){
@@ -246,19 +144,19 @@ public class Plateau extends Application {
         button.setMinHeight(50);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
-            if(!listMotValider.contains(labelMotEnCours.getText())) {
+            if(!listMotValider.contains(grilleLettres.getLabelMotEnCours().getText())) {
                 try {
-                    if (estDansDictionnaire(labelMotEnCours.getText())) {
+                    if (estDansDictionnaire(grilleLettres.getLabelMotEnCours().getText())) {
                         String toutLesMotsValider = labelMotValider.getText();
-                        toutLesMotsValider += labelMotEnCours.getText() + "\n";
+                        toutLesMotsValider += grilleLettres.getLabelMotEnCours().getText() + "\n";
                         labelMotValider.setText(toutLesMotsValider);
                         labelMotValider.setAlignment(Pos.CENTER);
                         labelMotValider.setStyle("-fx-font-weight: bold");
-                        listMotValider.add(labelMotEnCours.getText());
-                        labelMotEnCours.setText("");
-                        buttonListCheck.clear();
-                        enableAllButton();
-                        buttonAjouter.setDisable(true);
+                        listMotValider.add(grilleLettres.getLabelMotEnCours().getText());
+                        grilleLettres.getLabelMotEnCours().setText("");
+                        grilleLettres.getButtonListCheck().clear();
+                        grilleLettres.enableAllButton();
+                        grilleLettres.getButtonAjouter().setDisable(true);
                     } else {
                         labelTextInformation.setText("Ce mot n'existe pas !");
                     }
@@ -282,11 +180,11 @@ public class Plateau extends Application {
         button.setMinHeight(50);
         button.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px");
         button.setOnMouseClicked(e -> {
-            labelMotEnCours.setText("");
+            grilleLettres.getLabelMotEnCours().setText("");
             labelTextInformation.setText("");
-            buttonAjouter.setDisable(true);
-            buttonListCheck.clear();
-            enableAllButton();
+            grilleLettres.getButtonAjouter().setDisable(true);
+            grilleLettres.getButtonListCheck().clear();
+            grilleLettres.enableAllButton();
         });
         return button;
     }
