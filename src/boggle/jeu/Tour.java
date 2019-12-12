@@ -1,5 +1,7 @@
 package boggle.jeu;
 
+import java.io.IOException;
+
 public class Tour implements TourListener {
 
     private Joueur joueur;
@@ -30,12 +32,7 @@ public class Tour implements TourListener {
 
 
     @Override
-    public void findDuTour() {
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+    public void findDuTour() throws IOException {
         nextTourListener.nextTour();
     }
 }

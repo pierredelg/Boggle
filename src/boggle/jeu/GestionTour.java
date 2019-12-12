@@ -30,12 +30,12 @@ public class GestionTour implements NextTourListener {
     }
 
 
-    public void start() {
+    public void start() throws IOException {
         nextTour();
     }
 
     @Override
-    public void nextTour() {
+    public void nextTour() throws IOException {
         tour++;
         if (tourList.size() > tour) {
             etatJeuListener.setTour(tourList.get(tour));

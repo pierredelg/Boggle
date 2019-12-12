@@ -64,7 +64,7 @@ public class Plateau extends Application implements EtatJeuListener {
     }
 
     @Override
-    public void setTour(Tour tour) {
+    public void setTour(Tour tour) throws IOException {
         this.grilleLettres = new GrilleLettres();
         gridPane = grilleLettres.getGridPane();
 
@@ -73,11 +73,11 @@ public class Plateau extends Application implements EtatJeuListener {
         labelTextInformation.setMinHeight(50);
 
         //Création du label pour le joueur courant
-        labelJoueur = new Label(tour.getJoueur().getName());
+        labelJoueur = new Label("\n"+tour.getJoueur().getName()+"\n"+"     0 pts");
         labelJoueur.setMinWidth(170);
         labelJoueur.setMinHeight(50);
         labelJoueur.setAlignment(Pos.CENTER);
-        labelJoueur.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+        labelJoueur.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
         VBox vBoxTimer = tour.getTimer().generateTimer();
         vBoxTimer.setMinWidth(80);
@@ -105,7 +105,7 @@ public class Plateau extends Application implements EtatJeuListener {
         hboxButton.setSpacing(20);
 
 
-        grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter"));
+        grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter",tour));
         grilleLettres.getButtonAjouter().setDisable(true);
         buttonSupprimer = creerButtonSupprimer("Supprimer");
 
@@ -196,7 +196,7 @@ public class Plateau extends Application implements EtatJeuListener {
 
 
     //Permet la création du boutton ajouter ainsi q'un traitement particulier
-    private Button creerButtonAjouter(String s) {
+    private Button creerButtonAjouter(String s, Tour tour) {
         Button button = new Button(s);
         button.setMinWidth(50);
         button.setMinHeight(50);
@@ -205,6 +205,8 @@ public class Plateau extends Application implements EtatJeuListener {
             if (!listMotValider.contains(grilleLettres.getLabelMotEnCours().getText())) {
                 try {
                     if (estDansDictionnaire(grilleLettres.getLabelMotEnCours().getText())) {
+                        tour.getJoueur().updateScore(grilleLettres.getLabelMotEnCours().getText());
+                        labelJoueur.setText("\n"+tour.getJoueur().getName()+"\n     "+tour.getJoueur().getScore()+" pts");
                         String toutLesMotsValider = labelMotValider.getText();
                         toutLesMotsValider += grilleLettres.getLabelMotEnCours().getText() + "\n";
                         labelMotValider.setText(toutLesMotsValider);
@@ -215,6 +217,7 @@ public class Plateau extends Application implements EtatJeuListener {
                         grilleLettres.getButtonListCheck().clear();
                         grilleLettres.enableAllButton();
                         grilleLettres.getButtonAjouter().setDisable(true);
+                        labelTextInformation.setText("Bravo !");
                     } else {
                         labelTextInformation.setText("Ce mot n'existe pas !");
                     }

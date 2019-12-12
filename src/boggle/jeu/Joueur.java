@@ -13,20 +13,34 @@ public class Joueur {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void updateScore(String mot) {
+
+		int taille = mot.length();
+
+		switch (taille){
+			case 3 :
+				this.score += 1;
+				break;
+			case 4:
+				this.score += 1;
+				break;
+			case 5:
+				this.score += 2;
+				break;
+			case 6:
+				this.score += 3;
+				break;
+			case 7:
+				this.score += 5;
+				break;
+			default:
+				if(taille > 7)
+					this.score += 11;
+		}
 	}
 
 	public int getScore() {
 		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-	
-	public void updateScore(int score) {
-		this.score += score;
 	}
 
 	@Override

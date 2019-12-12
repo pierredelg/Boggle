@@ -4,20 +4,25 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GrilleLettres extends GridPane {
 
-    private final int taillePlateau = 5 ;
-    private String[][] etatPlateauChar = new String[taillePlateau][taillePlateau];
+    private int taillePlateau;
+    private String[][] etatPlateauChar;
     private GridPane gridPane;
     private List<Integer> emplacementButton;
     private Label labelMotEnCours;
     private Button buttonAjouter;
     private List<Integer> buttonListCheck = new ArrayList<>();
 
-    public GrilleLettres(){
+    public GrilleLettres() throws IOException {
+        lireFichierConfig();
         this.gridPane = generateGrille();
         this.labelMotEnCours = generateLabelMotEnCours();
     }
@@ -118,6 +123,20 @@ public class GrilleLettres extends GridPane {
         for(Integer i : emplacementButton){
             gridPane.getChildren().get(i).setDisable(false);
         }
+    }
+
+    private void lireFichierConfig() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("config/parametres.txt"));
+
+        String ligne = "";
+        while ((ligne = bufferedReader.readLine()) != null) {
+            String[] split = ligne.split("=");
+            if (split[0].equalsIgnoreCase("taille_du_plateau")) {
+                this.taillePlateau = Integer.parseInt(split[1]);
+                etatPlateauChar = new String[taillePlateau][taillePlateau];
+            }
+        }
+        bufferedReader.close();
     }
 
     public int getTaillePlateau() {

@@ -1,7 +1,9 @@
 package boggle.jeu;
 
+import java.io.IOException;
+
 public interface NextTourListener {
 
-    void nextTour();
+    void nextTour() throws IOException;
 
 }

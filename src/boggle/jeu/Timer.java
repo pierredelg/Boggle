@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import java.io.IOException;
+
 public class Timer {
 
     private static final Integer STARTMINUTE = 0;
@@ -71,7 +73,11 @@ public class Timer {
 
                                         if (timeMinutes == 0 && timeSeconds < 0) {
                                             timeline.stop();
-                                            tourListener.findDuTour();
+                                            try {
+                                                tourListener.findDuTour();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         if (timeSeconds < 0) {
