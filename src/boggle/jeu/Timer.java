@@ -1,5 +1,6 @@
 package boggle.jeu;
 
+import boggle.mots.GrilleLettres;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -18,19 +19,17 @@ import java.io.IOException;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = 0;
-    private static final Integer STARTSECONDE = 4;
+    private static final Integer STARTMINUTE = 3;
+    private static final Integer STARTSECONDE = 0;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;
     private Integer timeMinutes = STARTMINUTE;
-    private boolean timerPositif;
-    private boolean disable;
+    private static GrilleLettres grilleLettres;
 
     private TourListener tourListener;
 
     public Timer(TourListener tourListener){
-        this.timerPositif = true;
         this.tourListener = tourListener;
     }
 
@@ -52,7 +51,7 @@ public class Timer {
 
             public void handle(ActionEvent event) {
                 button.setDisable(true);
-                disable = true;
+                Timer.grilleLettres.enableAllButton();
                 if (timeline != null) {
                     timeline.stop();
                 }
@@ -111,5 +110,9 @@ public class Timer {
         vb.setSpacing(5);
 
         return vb;
+    }
+
+    public static void setGrilleLettres(GrilleLettres grilleLettres) {
+        Timer.grilleLettres = grilleLettres;
     }
 }

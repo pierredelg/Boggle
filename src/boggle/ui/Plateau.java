@@ -2,6 +2,7 @@ package boggle.ui;
 
 import boggle.jeu.EtatJeuListener;
 import boggle.jeu.GestionTour;
+import boggle.jeu.Timer;
 import boggle.jeu.Tour;
 import boggle.mots.ArbreLexicalLudo;
 import boggle.mots.GrilleLettres;
@@ -67,6 +68,7 @@ public class Plateau extends Application implements EtatJeuListener {
     public void setTour(Tour tour) throws IOException {
         this.grilleLettres = new GrilleLettres();
         gridPane = grilleLettres.getGridPane();
+        grilleLettres.disableAllButton();
 
         labelTextInformation = new Label();
         labelTextInformation.setMinWidth((grilleLettres.getTaillePlateau() - 1) * 80 - 20);
@@ -79,6 +81,7 @@ public class Plateau extends Application implements EtatJeuListener {
         labelJoueur.setAlignment(Pos.CENTER);
         labelJoueur.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
+        Timer.setGrilleLettres(grilleLettres);
         VBox vBoxTimer = tour.getTimer().generateTimer();
         vBoxTimer.setMinWidth(80);
         vBoxTimer.setMinHeight(50);
