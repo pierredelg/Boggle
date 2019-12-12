@@ -1,8 +1,8 @@
 package boggle.ui;
 
+import boggle.jeu.GestionTour;
+import boggle.jeu.Tour;
 import boggle.mots.ArbreLexicalLudo;
-import boggle.mots.Config;
-import boggle.mots.De2;
 import boggle.mots.GrilleLettres;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -15,12 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Plateau extends Application {
@@ -58,71 +56,79 @@ public class Plateau extends Application {
     //Plateau de jeu
     public void startBienvenue(Stage stage) {
 
+        GestionTour gestionTour = new GestionTour(2);
 
-        this.grilleLettres = new GrilleLettres();
-        gridPane = grilleLettres.getGridPane();
+        for(Tour tour : gestionTour.getTourList()) {
 
-        labelTextInformation = new Label();
-        labelTextInformation.setMinWidth(grilleLettres.getTaillePlateau() * 80);
-        labelTextInformation.setMinHeight(50);
+                this.grilleLettres = new GrilleLettres();
+                gridPane = grilleLettres.getGridPane();
 
-        //label pour nom du joueur (pour l'emplacement) => donc test
-        labelJoueur = new Label("Joueur 1");
-        labelJoueur.setMinWidth(170);
-        labelJoueur.setMinHeight(50);
-        labelJoueur.setAlignment(Pos.CENTER);
-        labelJoueur.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+                labelTextInformation = new Label();
+                labelTextInformation.setMinWidth((grilleLettres.getTaillePlateau() - 1) * 80 - 20);
+                labelTextInformation.setMinHeight(50);
 
-        //Construction de la Hbox contenant l'information (partie et joueur)
-        HBox hboxInformation = new HBox();
-        hboxInformation.getChildren().addAll(labelTextInformation,labelJoueur);
-        hboxInformation.setPadding(new Insets(0,20,0,20));
-        hboxInformation.setSpacing(20);
+                //Création du label pour le joueur courant
+                labelJoueur = new Label(tour.getJoueur().getName());
+                labelJoueur.setMinWidth(170);
+                labelJoueur.setMinHeight(50);
+                labelJoueur.setAlignment(Pos.CENTER);
+                labelJoueur.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
 
-        //Construction du label pour afficher les mots validés
-        labelMotValider = new Label();
-        labelMotValider.setMinWidth(168);
+                VBox vBoxTimer = tour.getTimer().generateTimer();
+                vBoxTimer.setMinWidth(80);
+                vBoxTimer.setMinHeight(50);
 
-        //Construction de la Vbox contenant le score
-        VBox vboxScore = new VBox();
-        vboxScore.getChildren().addAll(labelMotValider);
-        vboxScore.setStyle("-fx-border-width: 2px; -fx-border-color: black");
+                //Construction de la Hbox contenant l'information (partie et joueur)
+                HBox hboxInformation = new HBox();
+                hboxInformation.getChildren().addAll(vBoxTimer, labelTextInformation, labelJoueur);
+                hboxInformation.setPadding(new Insets(0, 20, 0, 20));
+                hboxInformation.setSpacing(20);
 
-        //construction de la Hbox contenant les buttons et le score
-        HBox hboxButton = new HBox();
-        hboxButton.getChildren().addAll(gridPane, vboxScore);
-        hboxButton.setPadding(new Insets(10,20,20,20));
-        hboxButton.setSpacing(20);
+                //Construction du label pour afficher les mots validés
+                labelMotValider = new Label();
+                labelMotValider.setMinWidth(168);
+
+                //Construction de la Vbox contenant le score
+                VBox vboxScore = new VBox();
+                vboxScore.getChildren().addAll(labelMotValider);
+                vboxScore.setStyle("-fx-border-width: 2px; -fx-border-color: black");
+
+                //construction de la Hbox contenant les buttons et le score
+                HBox hboxButton = new HBox();
+                hboxButton.getChildren().addAll(gridPane, vboxScore);
+                hboxButton.setPadding(new Insets(10, 20, 20, 20));
+                hboxButton.setSpacing(20);
 
 
-        grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter"));
-        grilleLettres.getButtonAjouter().setDisable(true);
-        buttonSupprimer = creerButtonSupprimer("Supprimer");
+                grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter"));
+                grilleLettres.getButtonAjouter().setDisable(true);
+                buttonSupprimer = creerButtonSupprimer("Supprimer");
 
-        //Contruction d'une hbox contenant les bouttons ajout et suppression
-        HBox hBoxButtonAction = new HBox();
-        hBoxButtonAction.setSpacing(8);
-        hBoxButtonAction.getChildren().addAll(grilleLettres.getButtonAjouter(),buttonSupprimer);
+                //Contruction d'une hbox contenant les bouttons ajout et suppression
+                HBox hBoxButtonAction = new HBox();
+                hBoxButtonAction.setSpacing(8);
+                hBoxButtonAction.getChildren().addAll(grilleLettres.getButtonAjouter(), buttonSupprimer);
 
-        //Construction de la Hbox contenant le mot en cours et les buttons ajouter et supprimer
-        HBox hboxMot = new HBox();
-        hboxMot.getChildren().addAll(grilleLettres.getLabelMotEnCours(), hBoxButtonAction);
-        hboxMot.setPadding(new Insets(0,20,0,20));
-        hboxMot.setSpacing(20);
+                //Construction de la Hbox contenant le mot en cours et les buttons ajouter et supprimer
+                HBox hboxMot = new HBox();
+                hboxMot.getChildren().addAll(grilleLettres.getLabelMotEnCours(), hBoxButtonAction);
+                hboxMot.setPadding(new Insets(0, 20, 0, 20));
+                hboxMot.setSpacing(20);
 
-        //Contruction de la Vbox contenant le tout
-        VBox vboxPrincipale = new VBox();
-        vboxPrincipale.getChildren().addAll(hboxInformation,hboxButton, hboxMot);
+                //Contruction de la Vbox contenant le tout
+                VBox vboxPrincipale = new VBox();
+                vboxPrincipale.getChildren().addAll(hboxInformation, hboxButton, hboxMot);
 
-        //Construction de la scéne
-        Scene scene = new Scene(vboxPrincipale, (grilleLettres.getTaillePlateau() * 80) + 230, (grilleLettres.getTaillePlateau() * 80) + 160);
+                //Construction de la scéne
+                Scene scene = new Scene(vboxPrincipale, (grilleLettres.getTaillePlateau() * 80) + 230, (grilleLettres.getTaillePlateau() * 80) + 160);
 
-        //Modification du titre de la scène
-        stage.setTitle("Plateau de jeu BOGGLE");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+                //Modification du titre de la scène
+                stage.setTitle("Plateau de jeu BOGGLE");
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.show();
 
+            }
     }
 
     //Permet la création de boutton
@@ -190,17 +196,6 @@ public class Plateau extends Application {
         });
         return button;
     }
-
-    private void textDisplay(GridPane grid, String theText, int ligne, int col) {
-        Text text = new Text();
-        text.setWrappingWidth(50);
-        text.setText(theText);
-        text.setTextAlignment(TextAlignment.CENTER);
-        GridPane.setRowIndex(text, ligne);
-        GridPane.setColumnIndex(text, col);
-        grid.getChildren().addAll(text);
-    }
-
 
     public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
         ArbreLexicalLudo arbre = ArbreLexicalLudo.lireMots("./config/dict-fr.txt");
