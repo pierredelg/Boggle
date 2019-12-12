@@ -9,15 +9,11 @@ import java.util.List;
 
 public class GrilleLettres extends GridPane {
 
-    //doit construire la grille aleatoire et la renvoyer à startbienvenue.
-    //charger les configs aussi
-
     private final int taillePlateau = 5 ;
     private String[][] etatPlateauChar = new String[taillePlateau][taillePlateau];
     private GridPane gridPane;
     private List<Integer> emplacementButton;
     private Label labelMotEnCours;
-
     private Button buttonAjouter;
     private List<Integer> buttonListCheck = new ArrayList<>();
 
@@ -32,35 +28,25 @@ public class GrilleLettres extends GridPane {
         config.chargerConfigDe();
         List<De2> de2List = config.de2List;
         this.gridPane = new GridPane();
-        //On espace le gridpane des bords de la scène
+
         int numeroCharacter = 0;
         for (int ligne = 1; ligne <= taillePlateau; ligne++) {
             for (int colonne = 1; colonne <= taillePlateau; colonne++) {
 
-                // TODO
                 Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
                 gridPane.add(button, colonne, ligne);
                 emplacementButton.add(((ligne-1)*taillePlateau)+colonne-1);
 
-                // TODO
                 etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
                 numeroCharacter++;
             }
         }
-
-        //Utile pour verification du plateau en console :)
-        for (int l = 0; l < taillePlateau; l++) {
-            for (int c = 0; c < taillePlateau; c++) {
-                System.out.print(etatPlateauChar[l][c] + " ");
-            }
-            System.out.println();
-        }
-
         return gridPane;
     }
 
+    //Genere le label pour afficher le mot en cours
     private Label generateLabelMotEnCours(){
-        //Construction du label pour afficher le mot en cours
+
         labelMotEnCours = new Label();
         labelMotEnCours.setMinWidth(80 * taillePlateau);
         labelMotEnCours.setMinHeight(50);
@@ -96,7 +82,7 @@ public class GrilleLettres extends GridPane {
         }
     }
 
-    //Permet d'activer certains boutton
+    //Active certain boutton
     private void enableSomeButton(int ligne, int colonne){
 
         for(int l = -1 ; l < 2; l++){
@@ -127,7 +113,7 @@ public class GrilleLettres extends GridPane {
 
 
 
-    //Permet d'activer tout les bouttons du gridpane
+    //Active tout les bouttons du gridpane
     public void enableAllButton(){
         for(Integer i : emplacementButton){
             gridPane.getChildren().get(i).setDisable(false);
@@ -138,36 +124,13 @@ public class GrilleLettres extends GridPane {
         return taillePlateau;
     }
 
-    public String[][] getEtatPlateauChar() {
-        return etatPlateauChar;
-    }
-
-    public void setEtatPlateauChar(String[][] etatPlateauChar) {
-        this.etatPlateauChar = etatPlateauChar;
-    }
 
     public GridPane getGridPane() {
         return gridPane;
     }
 
-    public void setGridPane(GridPane gridPane) {
-        this.gridPane = gridPane;
-    }
-
-    public List<Integer> getEmplacementButton() {
-        return emplacementButton;
-    }
-
-    public void setEmplacementButton(List<Integer> emplacementButton) {
-        this.emplacementButton = emplacementButton;
-    }
-
     public Label getLabelMotEnCours() {
         return labelMotEnCours;
-    }
-
-    public void setLabelMotEnCours(Label labelMotEnCours) {
-        this.labelMotEnCours = labelMotEnCours;
     }
 
     public Button getButtonAjouter() {
@@ -182,7 +145,4 @@ public class GrilleLettres extends GridPane {
         return buttonListCheck;
     }
 
-    public void setButtonListCheck(List<Integer> buttonListCheck) {
-        this.buttonListCheck = buttonListCheck;
-    }
 }

@@ -38,6 +38,7 @@ public class Plateau extends Application {
         launch(args);
     }
 
+    //Page de bienvenue
     public  void start(Stage stage){
         Text text = new Text("bonjour");
         Button buttonAccesConfig = creerButtonBienvenue("Config",stage);
@@ -54,6 +55,7 @@ public class Plateau extends Application {
         stage.show();
     }
 
+    //Plateau de jeu
     public void startBienvenue(Stage stage) {
 
 
