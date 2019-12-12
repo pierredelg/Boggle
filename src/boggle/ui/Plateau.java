@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,9 +58,9 @@ public class Plateau extends Application implements EtatJeuListener {
         stage.show();
     }
 
-    //Plateau de jeu
-    public void startBienvenue() {
-        new GestionTour(this, 2).start();
+
+    public void startBienvenue() throws IOException {
+        new GestionTour(this).start();
     }
 
     @Override
@@ -145,7 +146,11 @@ public class Plateau extends Application implements EtatJeuListener {
         button.setMinHeight(80);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
         button.setOnMouseClicked(e -> {
-            startBienvenue();
+            try {
+                startBienvenue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
         return button;
     }

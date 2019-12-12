@@ -16,8 +16,8 @@ import javafx.util.Duration;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = 3;
-    private static final Integer STARTSECONDE = 0;
+    private static final Integer STARTMINUTE = 1;
+    private static final Integer STARTSECONDE = 6;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;
@@ -69,6 +69,11 @@ public class Timer {
                                     public void handle(Event event) {
                                         timeSeconds--;
 
+                                        if (timeMinutes == 0 && timeSeconds < 0) {
+                                            timeline.stop();
+                                            tourListener.findDuTour();
+                                        }
+
                                         if (timeSeconds < 0) {
                                             timeSeconds = 59;
                                             timeMinutes--;
@@ -79,11 +84,7 @@ public class Timer {
                                         else
                                             timerLabel.setText(timeMinutes.toString() + " : " + timeSeconds.toString());
 
-                                        if (timeMinutes <= 0 && timeSeconds <= 0) {
-                                            timerPositif = false;
-                                            timeline.stop();
-                                            tourListener.findDuTour();
-                                        }
+
                                     }
                                 }));
                 timeline.playFromStart();
@@ -104,13 +105,5 @@ public class Timer {
         vb.setSpacing(5);
 
         return vb;
-    }
-
-    public boolean isTimerPositif() {
-        return timerPositif;
-    }
-
-    public boolean isDisable() {
-        return disable;
     }
 }

@@ -4,7 +4,6 @@ public class Tour implements TourListener {
 
     private Joueur joueur;
     private Timer timer;
-    private boolean peutJouer;
     private final NextTourListener nextTourListener;
 
     public Tour(NextTourListener nextTourListener, Joueur joueur){
@@ -29,12 +28,14 @@ public class Tour implements TourListener {
         this.timer = timer;
     }
 
-    public boolean isPeutJouer() {
-        return getTimer().isDisable() && getTimer().isTimerPositif();
-    }
 
     @Override
     public void findDuTour() {
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         nextTourListener.nextTour();
     }
 }
