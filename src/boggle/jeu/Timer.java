@@ -17,15 +17,20 @@ import javafx.util.Duration;
 public class Timer {
 
     private static final Integer STARTMINUTE = 3;
-    private static final Integer STARTSECONDE = 00;
+    private static final Integer STARTSECONDE = 0;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;
     private Integer timeMinutes = STARTMINUTE;
-    private boolean TimerPositif = true;
+    private boolean timerPositif;
     private boolean disable;
 
-    public Timer(){}
+    private TourListener tourListener;
+
+    public Timer(TourListener tourListener){
+        this.timerPositif = true;
+        this.tourListener = tourListener;
+    }
 
 
     public VBox generateTimer() {
@@ -75,11 +80,10 @@ public class Timer {
                                             timerLabel.setText(timeMinutes.toString() + " : " + timeSeconds.toString());
 
                                         if (timeMinutes <= 0 && timeSeconds <= 0) {
-                                            TimerPositif = false;
+                                            timerPositif = false;
                                             timeline.stop();
+                                            tourListener.findDuTour();
                                         }
-
-
                                     }
                                 }));
                 timeline.playFromStart();
@@ -103,7 +107,10 @@ public class Timer {
     }
 
     public boolean isTimerPositif() {
-        return TimerPositif;
+        return timerPositif;
     }
 
+    public boolean isDisable() {
+        return disable;
+    }
 }

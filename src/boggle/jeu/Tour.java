@@ -1,13 +1,16 @@
 package boggle.jeu;
 
-public class Tour{
+public class Tour implements TourListener {
 
     private Joueur joueur;
     private Timer timer;
+    private boolean peutJouer;
+    private final NextTourListener nextTourListener;
 
-    public Tour(Joueur joueur){
+    public Tour(NextTourListener nextTourListener, Joueur joueur){
+        this.nextTourListener = nextTourListener;
         this.joueur =  joueur;
-        this.timer = new Timer();
+        this.timer = new Timer(this);
     }
 
     public Joueur getJoueur() {
@@ -24,5 +27,14 @@ public class Tour{
 
     public void setTimer(Timer timer) {
         this.timer = timer;
+    }
+
+    public boolean isPeutJouer() {
+        return getTimer().isDisable() && getTimer().isTimerPositif();
+    }
+
+    @Override
+    public void findDuTour() {
+        nextTourListener.nextTour();
     }
 }

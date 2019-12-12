@@ -76,7 +76,7 @@ public class GrilleLettres extends GridPane {
     }
 
     //Permet de désactiver tout les bouttons du gridpane
-    private void disableAllButton(){
+    public void disableAllButton(){
         for(Integer i : emplacementButton){
             gridPane.getChildren().get(i).setDisable(true);
         }
