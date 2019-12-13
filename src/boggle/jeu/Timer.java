@@ -1,5 +1,6 @@
 package boggle.jeu;
 
+import boggle.config.ChargerConfig;
 import boggle.mots.GrilleLettres;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,8 +20,8 @@ import java.io.IOException;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = 3;
-    private static final Integer STARTSECONDE = 0;
+    private static final Integer STARTMINUTE = ChargerConfig.getTimerSeconde() / 60;
+    private static final Integer STARTSECONDE = ChargerConfig.getTimerSeconde() % 60;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;
@@ -39,7 +40,7 @@ public class Timer {
 
         timerLabel.setTextFill(Color.RED);
         timerLabel.setStyle("-fx-font-size: 1.8em;");
-        if (STARTSECONDE == 0)
+        if (STARTSECONDE == 0 || STARTSECONDE < 10)
             timerLabel.setText(timeMinutes.toString() + " : 0" + timeSeconds.toString());
         else
             timerLabel.setText(timeMinutes.toString() + " : " + timeSeconds.toString());

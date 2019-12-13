@@ -35,6 +35,7 @@ public class GrilleLettres extends GridPane {
         for (int ligne = 1; ligne <= taillePlateau; ligne++) {
             for (int colonne = 1; colonne <= taillePlateau; colonne++) {
 
+                numeroCharacter = (numeroCharacter == deList.size()) ? 0 : numeroCharacter;
                 Button button = creerButton(deList.get(numeroCharacter).getFace().toString(), ligne, colonne);
                 gridPane.add(button, colonne, ligne);
                 emplacementButton.add(((ligne - 1) * taillePlateau) + colonne - 1);

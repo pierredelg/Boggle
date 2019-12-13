@@ -16,6 +16,7 @@ public class ChargerConfig {
     private static String dictionnaire;
     private static ArbreLexicalLudo arbreLexicalLudo;
     private static int[] points;
+    private static int timerSeconde;
 
     public ChargerConfig() throws IOException {
         lireConfig();
@@ -36,10 +37,12 @@ public class ChargerConfig {
                     nombreJoueur = Integer.parseInt(split[1].trim());
                     break;
                 case "taille-plateau":
-                    taillePlateau = Integer.parseInt(split[1].trim());
+                    int tailleP = Integer.parseInt(split[1].trim()) ;
+                    taillePlateau = (tailleP > 10) ? 5 : tailleP;
                     break;
                 case "taille-min-mot":
-                    tailleMinMot = Integer.parseInt(split[1].trim());
+                    int tailleM = Integer.parseInt(split[1].trim());
+                    tailleMinMot = (tailleM < 3) ? 3 : tailleM;
                     break;
                 case "des":
                     des = split[1].trim();
@@ -54,6 +57,10 @@ public class ChargerConfig {
                     for (int i = 0; i < split.length; i++) {
                         points[i] = Integer.parseInt(split[i].trim());
                     }
+                    break;
+                case "timer-seconde":
+                    int temp = Integer.parseInt(split[1].trim());
+                    timerSeconde = (temp > 300) ? 180 : temp;
                     break;
                 default:
                     throw new InvalidNameConfig("Paramètre de configuration non connue");
@@ -87,5 +94,9 @@ public class ChargerConfig {
 
     public static ArbreLexicalLudo getArbreLexicalLudo() {
         return arbreLexicalLudo;
+    }
+
+    public static int getTimerSeconde() {
+        return timerSeconde;
     }
 }
