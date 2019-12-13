@@ -1,11 +1,11 @@
 package boggle.mots;
 
-public class De2 {
+public class De {
 
     private Character [] possibilites;
     private Character face;
 
-    public De2(Character [] possibilite) {
+    public De(Character [] possibilite) {
         this.possibilites = possibilite;
         this.face = ' ';
     }

@@ -1,9 +1,7 @@
 package boggle.jeu;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import boggle.config.ChargerConfig;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ public class GestionTour implements NextTourListener {
 
     public GestionTour(EtatJeuListener etatJeuListener) throws IOException {
         this.etatJeuListener = etatJeuListener;
-        lireFichierConfig();
+        this.nbreJoueur = ChargerConfig.getNombreJoueur();
         initialisationPartie();
     }
 
@@ -28,7 +26,6 @@ public class GestionTour implements NextTourListener {
             this.tourList.add(new Tour(this, new Joueur("Joueur n° " + i)));
         }
     }
-
 
     public void start() throws IOException {
         nextTour();
@@ -42,16 +39,5 @@ public class GestionTour implements NextTourListener {
         } else {
             etatJeuListener.finDuJeu(tourList);
         }
-    }
-
-    private void lireFichierConfig() throws IOException {
-
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("config/parametres.txt"));
-
-        String ligne = "";
-        ligne = bufferedReader.readLine();
-        String[] split = ligne.split("=");
-        this.nbreJoueur = Integer.parseInt(split[1]);
-        bufferedReader.close();
     }
 }

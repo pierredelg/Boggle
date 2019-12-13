@@ -1,2 +1,0 @@
-Nombre_de_joueur=2
-taille_du_plateau=5
