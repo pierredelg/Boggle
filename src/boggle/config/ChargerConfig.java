@@ -37,10 +37,12 @@ public class ChargerConfig {
                     nombreJoueur = Integer.parseInt(split[1].trim());
                     break;
                 case "taille-plateau":
-                    taillePlateau = Integer.parseInt(split[1].trim());
+                    int tailleP = Integer.parseInt(split[1].trim()) ;
+                    taillePlateau = (tailleP > 10) ? 5 : tailleP;
                     break;
                 case "taille-min-mot":
-                    tailleMinMot = Integer.parseInt(split[1].trim());
+                    int tailleM = Integer.parseInt(split[1].trim());
+                    tailleMinMot = (tailleM < 3) ? 3 : tailleM;
                     break;
                 case "des":
                     des = split[1].trim();
@@ -57,7 +59,8 @@ public class ChargerConfig {
                     }
                     break;
                 case "timer-seconde":
-                    timerSeconde = Integer.parseInt(split[1].trim());
+                    int temp = Integer.parseInt(split[1].trim());
+                    timerSeconde = (temp > 300) ? 180 : temp;
                     break;
                 default:
                     throw new InvalidNameConfig("Paramètre de configuration non connue");
