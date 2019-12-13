@@ -1,12 +1,10 @@
 package boggle.mots;
 
+import boggle.config.ChargerConfig;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,27 +20,26 @@ public class GrilleLettres extends GridPane {
     private List<Integer> buttonListCheck = new ArrayList<>();
 
     public GrilleLettres() throws IOException {
-        lireFichierConfig();
+        this.taillePlateau = ChargerConfig.getTaillePlateau();
+        this.etatPlateauChar = new String[taillePlateau][taillePlateau];
         this.gridPane = generateGrille();
         this.labelMotEnCours = generateLabelMotEnCours();
     }
 
-    private GridPane generateGrille(){
+    private GridPane generateGrille() {
         emplacementButton = new ArrayList<>();
-        Config config = new Config();
-        config.chargerConfigDe();
-        List<De2> de2List = config.de2List;
+        List<De> deList = new Config().deList;
         this.gridPane = new GridPane();
 
         int numeroCharacter = 0;
         for (int ligne = 1; ligne <= taillePlateau; ligne++) {
             for (int colonne = 1; colonne <= taillePlateau; colonne++) {
 
-                Button button = creerButton(de2List.get(numeroCharacter).getFace().toString(),ligne,colonne);
+                Button button = creerButton(deList.get(numeroCharacter).getFace().toString(), ligne, colonne);
                 gridPane.add(button, colonne, ligne);
-                emplacementButton.add(((ligne-1)*taillePlateau)+colonne-1);
+                emplacementButton.add(((ligne - 1) * taillePlateau) + colonne - 1);
 
-                etatPlateauChar[ligne - 1][colonne - 1] = de2List.get(numeroCharacter).getFace().toString().toUpperCase();
+                etatPlateauChar[ligne - 1][colonne - 1] = deList.get(numeroCharacter).getFace().toString().toUpperCase();
                 numeroCharacter++;
             }
         }
@@ -50,7 +47,7 @@ public class GrilleLettres extends GridPane {
     }
 
     //Genere le label pour afficher le mot en cours
-    private Label generateLabelMotEnCours(){
+    private Label generateLabelMotEnCours() {
 
         labelMotEnCours = new Label();
         labelMotEnCours.setMinWidth(80 * taillePlateau);
@@ -60,7 +57,7 @@ public class GrilleLettres extends GridPane {
     }
 
     //Permet la création de boutton
-    private Button creerButton(String s,int ligne, int colonne) {
+    private Button creerButton(String s, int ligne, int colonne) {
         Button button = new Button(s);
         button.setMinWidth(80);
         button.setMinHeight(80);
@@ -70,38 +67,38 @@ public class GrilleLettres extends GridPane {
             mot += s;
             labelMotEnCours.setText(mot);
             labelMotEnCours.setAlignment(Pos.CENTER);
-            buttonListCheck.add(((ligne-1)*taillePlateau)+colonne-1);
-            if(labelMotEnCours.getText().length() >= taillePlateau - 1 ){
+            buttonListCheck.add(((ligne - 1) * taillePlateau) + colonne - 1);
+            if (labelMotEnCours.getText().length() >= ChargerConfig.getTailleMinMot() && labelMotEnCours.getText().length() >= taillePlateau - 1) {
                 buttonAjouter.setDisable(false);
             }
             disableAllButton();
-            enableSomeButton(ligne,colonne);
+            enableSomeButton(ligne, colonne);
         });
         return button;
     }
 
     //Permet de désactiver tout les bouttons du gridpane
-    public void disableAllButton(){
-        for(Integer i : emplacementButton){
+    public void disableAllButton() {
+        for (Integer i : emplacementButton) {
             gridPane.getChildren().get(i).setDisable(true);
         }
     }
 
     //Active certain boutton
-    private void enableSomeButton(int ligne, int colonne){
+    private void enableSomeButton(int ligne, int colonne) {
 
-        for(int l = -1 ; l < 2; l++){
-            for(int c = colonne==1?0:-1; c < 2; c++){
+        for (int l = -1; l < 2; l++) {
+            for (int c = colonne == 1 ? 0 : -1; c < 2; c++) {
 
-                if(colonne == this.taillePlateau){
-                    if(c != 1) {
+                if (colonne == this.taillePlateau) {
+                    if (c != 1) {
                         int ligneBis = ligne + l;
                         int colonneBis = colonne + c;
                         int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
                         if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1)
                             gridPane.getChildren().get(buttonCible).setDisable(false);
                     }
-                }else {
+                } else {
                     int ligneBis = ligne + l;
                     int colonneBis = colonne + c;
                     int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
@@ -110,43 +107,19 @@ public class GrilleLettres extends GridPane {
                 }
             }
         }
-        for(Integer i: buttonListCheck){
+        for (Integer i : buttonListCheck) {
             gridPane.getChildren().get(i).setDisable(true);
         }
         gridPane.getChildren().get((ligne - 1) * this.taillePlateau + colonne - 1).setDisable(true);
     }
 
 
-
     //Active tout les bouttons du gridpane
-    public void enableAllButton(){
-        for(Integer i : emplacementButton){
+    public void enableAllButton() {
+        for (Integer i : emplacementButton) {
             gridPane.getChildren().get(i).setDisable(false);
         }
     }
-
-    private void lireFichierConfig() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("config/parametres.txt"));
-
-        String ligne = "";
-        while ((ligne = bufferedReader.readLine()) != null) {
-            String[] split = ligne.split("=");
-            if (split[0].equalsIgnoreCase("taille_du_plateau")) {
-                int taille = Integer.parseInt(split[1]);
-                if(taille >= 4 && taille <= 5)
-                    this.taillePlateau = taille;
-                else
-                    this.taillePlateau = 4;
-                etatPlateauChar = new String[taillePlateau][taillePlateau];
-            }
-        }
-        bufferedReader.close();
-    }
-
-    public int getTaillePlateau() {
-        return taillePlateau;
-    }
-
 
     public GridPane getGridPane() {
         return gridPane;

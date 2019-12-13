@@ -1,5 +1,7 @@
 package boggle.jeu;
 
+import boggle.config.ChargerConfig;
+
 public class Joueur {
 
 	private String name;
@@ -16,26 +18,27 @@ public class Joueur {
 	public void updateScore(String mot) {
 
 		int taille = mot.length();
+		int[] points = ChargerConfig.getPoints();
 
 		switch (taille){
 			case 3 :
-				this.score += 1;
+				this.score += points[0];
 				break;
 			case 4:
-				this.score += 1;
+				this.score += points[1];
 				break;
 			case 5:
-				this.score += 2;
+				this.score += points[2];
 				break;
 			case 6:
-				this.score += 3;
+				this.score += points[3];
 				break;
 			case 7:
-				this.score += 5;
+				this.score += points[4];
 				break;
 			default:
 				if(taille > 7)
-					this.score += 11;
+					this.score += points[5];
 		}
 	}
 

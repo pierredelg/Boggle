@@ -1,5 +1,7 @@
 package boggle.mots;
 
+import boggle.config.ChargerConfig;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
-    public String nomFichierCondfig = "config/des-4x4.csv";
+    public String nomFichierDes = "config/"+ ChargerConfig.getDes();
 
-    public List<De2> de2List = new ArrayList<>();
+    public List<De> deList = new ArrayList<>();
 
     public Config() {
         chargerConfigDe();
@@ -17,8 +19,9 @@ public class Config {
 
     //On charge les config de chaques dés avec laquelle on va créer le dé
     //et le lancer
-    public void chargerConfigDe(){
-        File file = new File(nomFichierCondfig);
+    public List<De> chargerConfigDe(){
+        System.out.println(nomFichierDes);
+        File file = new File(nomFichierDes);
 
         try{
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -33,15 +36,17 @@ public class Config {
                 for (int i = 0 ; i < split.length ; i++){
                     characters[i] = split[i].charAt(0);
                 }
-                De2 de2 = new De2(characters);
+                De de2 = new De(characters);
                 de2.lancerDe();
-                this.de2List.add(de2);
+                this.deList.add(de2);
             }
+
 
             bufferedReader.close();
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
+        return this.deList;
     }
 
 }

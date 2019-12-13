@@ -1,9 +1,7 @@
 package boggle.ui;
 
-import boggle.jeu.EtatJeuListener;
-import boggle.jeu.GestionTour;
-import boggle.jeu.Timer;
-import boggle.jeu.Tour;
+import boggle.config.ChargerConfig;
+import boggle.jeu.*;
 import boggle.mots.ArbreLexicalLudo;
 import boggle.mots.GrilleLettres;
 import javafx.application.Application;
@@ -61,6 +59,7 @@ public class Plateau extends Application implements EtatJeuListener {
 
 
     public void startBienvenue() throws IOException {
+        new ChargerConfig();
         new GestionTour(this).start();
     }
 
@@ -71,7 +70,7 @@ public class Plateau extends Application implements EtatJeuListener {
         grilleLettres.disableAllButton();
 
         labelTextInformation = new Label();
-        labelTextInformation.setMinWidth((grilleLettres.getTaillePlateau() - 1) * 80 - 20);
+        labelTextInformation.setMinWidth((ChargerConfig.getTaillePlateau() - 1) * 80 - 20);
         labelTextInformation.setMinHeight(50);
 
         //Création du label pour le joueur courant
@@ -129,7 +128,7 @@ public class Plateau extends Application implements EtatJeuListener {
         vboxPrincipale.getChildren().addAll(hboxInformation, hboxButton, hboxMot);
 
         //Construction de la scéne
-        Scene scene = new Scene(vboxPrincipale, (grilleLettres.getTaillePlateau() * 80) + 230, (grilleLettres.getTaillePlateau() * 80) + 160);
+        Scene scene = new Scene(vboxPrincipale, (ChargerConfig.getTaillePlateau() * 80) + 230, (ChargerConfig.getTaillePlateau() * 80) + 160);
 
         //Modification du titre de la scène
         stage.setTitle("Plateau de jeu BOGGLE");
@@ -255,7 +254,6 @@ public class Plateau extends Application implements EtatJeuListener {
     }
 
     public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
-        ArbreLexicalLudo arbre = ArbreLexicalLudo.lireMots("./config/dict-fr.txt");
-        return arbre.contient(motEnCours);
+        return ChargerConfig.getArbreLexicalLudo().contient(motEnCours);
     }
 }

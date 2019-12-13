@@ -1,4 +1,6 @@
 package boggle.mots;
+import boggle.config.ChargerConfig;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -180,7 +182,8 @@ public class ArbreLexicalLudo {
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        ArbreLexicalLudo arbre = ArbreLexicalLudo.lireMots("./config/dict-fr.txt");
+        String dictionnaire = "config/"+ ChargerConfig.getDictionnaire();
+        ArbreLexicalLudo arbre = ArbreLexicalLudo.lireMots(dictionnaire);
 
         List<String> mots = new ArrayList<>();
         arbre.motsCommencantPar("", mots);
