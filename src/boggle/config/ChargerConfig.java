@@ -16,6 +16,7 @@ public class ChargerConfig {
     private static String dictionnaire;
     private static ArbreLexicalLudo arbreLexicalLudo;
     private static int[] points;
+    private static int timerSeconde;
 
     public ChargerConfig() throws IOException {
         lireConfig();
@@ -55,6 +56,9 @@ public class ChargerConfig {
                         points[i] = Integer.parseInt(split[i].trim());
                     }
                     break;
+                case "timer-seconde":
+                    timerSeconde = Integer.parseInt(split[1].trim());
+                    break;
                 default:
                     throw new InvalidNameConfig("Paramètre de configuration non connue");
             }
@@ -87,5 +91,9 @@ public class ChargerConfig {
 
     public static ArbreLexicalLudo getArbreLexicalLudo() {
         return arbreLexicalLudo;
+    }
+
+    public static int getTimerSeconde() {
+        return timerSeconde;
     }
 }
