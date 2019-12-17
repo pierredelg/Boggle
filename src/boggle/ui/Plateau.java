@@ -2,7 +2,6 @@ package boggle.ui;
 
 import boggle.config.ChargerConfig;
 import boggle.jeu.*;
-import boggle.mots.ArbreLexicalLudo;
 import boggle.mots.GrilleLettres;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -254,6 +253,6 @@ public class Plateau extends Application implements EtatJeuListener {
     }
 
     public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
-        return ChargerConfig.getArbreLexicalLudo().contient(motEnCours);
+        return ChargerConfig.getArbreLexical().contient(motEnCours);
     }
 }

@@ -73,7 +73,22 @@ public class GrilleLettres extends GridPane {
                 buttonAjouter.setDisable(false);
             }
             disableAllButton();
-            enableSomeButton(ligne, colonne);
+            ArrayList<Button> validButtons = enableSomeButton(ligne, colonne, true);
+            if(labelMotEnCours.getText().length() >= ChargerConfig.getTailleMinMot()){
+                //TODO ajouter aide contextuelle
+                String debutMot = labelMotEnCours.getText();
+                int longueurMot = debutMot.length();
+                ArrayList<String> possibilitésMots = new ArrayList<>();
+                //On récupere tout les mots commençant par les lettres selectionnées
+                ChargerConfig.getArbreLexical().motsCommencantPar(debutMot,possibilitésMots);
+                char lettreAide;
+                if(!possibilitésMots.isEmpty() && possibilitésMots.get(0) != null && possibilitésMots.get(0).length() >= longueurMot) {
+                    lettreAide = possibilitésMots.get(0).charAt(longueurMot);
+                    validButtons.stream().forEach(button1 -> {if(button1.getText().equals(lettreAide)){
+                        button1.setStyle("-fx-background-color: red");
+                    }});
+                }
+            }
         });
         return button;
     }
@@ -86,7 +101,8 @@ public class GrilleLettres extends GridPane {
     }
 
     //Active certain boutton
-    private void enableSomeButton(int ligne, int colonne) {
+    private ArrayList<Button> enableSomeButton(int ligne, int colonne, boolean aide) {
+        ArrayList<Button> validButtons = new ArrayList<>();
 
         for (int l = -1; l < 2; l++) {
             for (int c = colonne == 1 ? 0 : -1; c < 2; c++) {
@@ -96,15 +112,19 @@ public class GrilleLettres extends GridPane {
                         int ligneBis = ligne + l;
                         int colonneBis = colonne + c;
                         int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
-                        if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1)
+                        if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
+                            validButtons.add((Button) gridPane.getChildren().get(buttonCible));
                             gridPane.getChildren().get(buttonCible).setDisable(false);
+                        }
                     }
                 } else {
                     int ligneBis = ligne + l;
                     int colonneBis = colonne + c;
                     int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
-                    if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1)
+                    if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
+                        validButtons.add((Button) gridPane.getChildren().get(buttonCible));
                         gridPane.getChildren().get(buttonCible).setDisable(false);
+                    }
                 }
             }
         }
@@ -112,6 +132,7 @@ public class GrilleLettres extends GridPane {
             gridPane.getChildren().get(i).setDisable(true);
         }
         gridPane.getChildren().get((ligne - 1) * this.taillePlateau + colonne - 1).setDisable(true);
+        return validButtons;
     }
 
 
