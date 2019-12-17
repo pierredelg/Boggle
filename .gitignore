@@ -2,5 +2,8 @@
 /workspace.xml
 *.iml
 *.class
-.idea
+.idea/
 /bin/
+.classpath
+.project
+.settings/

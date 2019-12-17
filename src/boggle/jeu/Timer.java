@@ -5,7 +5,6 @@ import boggle.mots.GrilleLettres;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -65,35 +64,32 @@ public class Timer {
 
                 timeline = new Timeline();
                 timeline.setCycleCount(Timeline.INDEFINITE);
+                // KeyFrame event handler
                 timeline.getKeyFrames().add(
                         new KeyFrame(Duration.seconds(1),
-                                new EventHandler() {
+                                (EventHandler) event1 -> {
+                                    timeSeconds--;
 
-                                    // KeyFrame event handler
-                                    public void handle(Event event) {
-                                        timeSeconds--;
-
-                                        if (timeMinutes == 0 && timeSeconds < 0) {
-                                            timeline.stop();
-                                            try {
-                                                tourListener.findDuTour();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                    if (timeMinutes == 0 && timeSeconds < 0) {
+                                        timeline.stop();
+                                        try {
+                                            tourListener.findDuTour();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
                                         }
-
-                                        if (timeSeconds < 0) {
-                                            timeSeconds = 59;
-                                            timeMinutes--;
-                                        }
-
-                                        if (timeSeconds < 10 && timeSeconds >= 0)
-                                            timerLabel.setText(timeMinutes.toString() + " : 0" + timeSeconds.toString());
-                                        else
-                                            timerLabel.setText(timeMinutes.toString() + " : " + timeSeconds.toString());
-
-
                                     }
+
+                                    if (timeSeconds < 0) {
+                                        timeSeconds = 59;
+                                        timeMinutes--;
+                                    }
+
+                                    if (timeSeconds < 10 && timeSeconds >= 0)
+                                        timerLabel.setText(timeMinutes.toString() + " : 0" + timeSeconds.toString());
+                                    else
+                                        timerLabel.setText(timeMinutes.toString() + " : " + timeSeconds.toString());
+
+
                                 }));
                 timeline.playFromStart();
             }
