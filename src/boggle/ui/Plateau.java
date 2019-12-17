@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -39,19 +40,50 @@ public class Plateau extends Application implements EtatJeuListener {
         launch(args);
     }
 
-    //Page de bienvenue
+    //2 ème Page de bienvenue
     public void start(Stage stage) {
         this.stage = stage;
-        Text text = new Text("bonjour");
-        Button buttonAccesConfig = creerButtonBienvenue("Config");
+        Label labelResume = new Label();
+        labelResume.setMinWidth(900);
+        labelResume.setMinHeight(100);
+        labelResume.setAlignment(Pos.CENTER);
+        labelResume.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
 
-        //Contruction de la Vbox contenant le text et le boutton
+        Label labelBienvenue = new Label();
+        labelBienvenue.setMinWidth(900);
+        labelBienvenue.setMinHeight(100);
+        labelBienvenue.setAlignment(Pos.CENTER);
+        labelBienvenue.setStyle("-fx-font-size: 35; -fx-font-weight: bold;");
+
+        String bienvenue = "BIENVENUE";
+        labelBienvenue.setText(bienvenue);
+
+        Line line = new Line(0, 0, 850, 0);
+        line.setStrokeWidth(5);
+        line.setStroke(Color.ORANGE);
+        line.setTranslateX(20);
+
+        String resume = "Dans une limite de temps de 3 minutes, vous devez trouver un maximum de mots en formant des chaînes\nde  lettres contiguës. Plus le mot est long, plus les points qu'il vous rapporte sont importants.\n" +
+                "\n" +
+                "Vous pouvez passer d'une lettre à la suivante située directement à gauche, à droite, en haut, en bas, ou\nsur l'une des quatre cases diagonales.\n" +
+                "\n" +
+                "    - Une lettre ne peut pas être utilisée plus d'une fois pour un même mot.\n" +
+                "    - Seuls les mots de trois lettres ou plus comptent.\n" +
+                "    - Les accents ne sont pas importants. E peut être utilisé comme É, È, Ê, etc...\n\n\n\n\n\n\n\n\n";
+        labelResume.setText(resume);
+
+        Button buttonStart = creerButtonStart("Start");
+        buttonStart.setMinWidth(900);
+        buttonStart.setMinHeight(100);
+
+
+        //Contruction de la Vbox contenant le score et le boutton recommencer
         VBox vboxPrincipale = new VBox();
-        vboxPrincipale.getChildren().addAll(text, buttonAccesConfig);
-        Scene scene = new Scene(vboxPrincipale, 500, 500);
+        vboxPrincipale.getChildren().addAll(labelBienvenue,line,labelResume,buttonStart);
+        Scene scene = new Scene(vboxPrincipale, 900,  400 + 50);
 
         //Modification du titre de la scène
-        stage.setTitle("Bienvenue sur boggle");
+        stage.setTitle("Bienvenue sur Boogle");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
@@ -193,6 +225,20 @@ public class Plateau extends Application implements EtatJeuListener {
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
         button.setOnMouseClicked(e -> {
             start(stage);
+        });
+        return button;
+    }
+
+    //Permet la création de boutton
+    private Button creerButtonStart(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+                startBienvenue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
         return button;
     }
