@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,6 +36,7 @@ public class Plateau extends Application implements EtatJeuListener {
     private Stage stage;
 
     private GestionTour gestionTour;
+    private int nbJoueur,taillePlateau,time;
 
     public static void main(String[] args) {
         launch(args);
@@ -95,6 +97,187 @@ public class Plateau extends Application implements EtatJeuListener {
         new GestionTour(this).start();
     }
 
+    public void startSelectMode() {
+    	GridPane root = new GridPane();
+    	
+    	root.setPadding(new Insets(20));
+        root.setHgap(25);
+        root.setVgap(15);
+  
+        Label labelTitle = new Label("Veuillez sélectionner un mode de jeu");
+        labelTitle.setMinSize(900, 100);
+        labelTitle.setAlignment(Pos.CENTER);
+        labelTitle.setStyle("-fx-font-size: 35; -fx-font-weight: bold;");
+        
+        root.add(labelTitle, 0, 0, 2, 1);
+        //root.setGridLinesVisible(true);
+        
+        Button onePlayer = creerButtonOnePlayer("1 Joueur");
+        onePlayer.setMinSize(400, 100);
+        root.setHgap(75);
+        root.setVgap(30);
+        Button twoPlayers = creerButtonTwoPlayers("2 Joueurs");
+        twoPlayers.setMinSize(400, 100);
+        Button oneVersusCpu = creerButtonOneVersusCpu("1 Joueur vs CPU");
+        oneVersusCpu.setMinSize(400, 100);
+        Button config = creerButtonConfig("Autre configuration");
+        config.setMinSize(400, 100);
+        
+        root.add(onePlayer, 0, 1);
+        root.add(twoPlayers, 0, 2);
+        root.add(oneVersusCpu, 1, 1);
+        root.add(config, 1, 2);
+        
+        Scene scene = new Scene(root,920,450);
+        
+        //Modification du titre de la scène
+        stage.setTitle("Sélection du mode de jeu");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+    
+    private Button creerButtonOnePlayer(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+				jouerOnePlayer();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
+        return button;
+    }
+    
+    public void jouerOnePlayer() throws IOException{
+    	new ChargerConfig();
+    	ChargerConfig.setNombreJoueur(1);
+        new GestionTour(this).start();
+    }
+    
+    private Button creerButtonTwoPlayers(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+				jouerTwoPlayers();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
+        return button;
+    }
+    
+    public void jouerTwoPlayers() throws IOException{
+    	new ChargerConfig();
+        new GestionTour(this).start();
+    }
+    
+    private Button creerButtonOneVersusCpu(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+				jouerOneVersusCpu();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
+        return button;
+    }
+    
+    public void jouerOneVersusCpu() throws IOException{
+    	new ChargerConfig();
+        new GestionTour(this).start();
+    }
+    
+    private Button creerButtonConfig(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+				jouerConfig();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
+        return button;
+    }
+    
+    public void jouerConfig() throws IOException{
+        GridPane root = new GridPane();
+        root.setPadding(new Insets(20));
+        root.setHgap(25);
+        root.setVgap(15);
+    	
+    	Label labelTitle = new Label("Veuillez sélectionner vos préférences");
+        labelTitle.setMinSize(900, 100);
+        labelTitle.setAlignment(Pos.CENTER);
+        labelTitle.setStyle("-fx-font-size: 35; -fx-font-weight: bold;");
+        
+        root.add(labelTitle, 0, 0, 2, 1);
+                
+        Label labelNbJoueurs = new Label("Nombre de joueur(s) :");
+        TextField fieldNbJoueurs = new TextField();
+        fieldNbJoueurs.textProperty().addListener((observable, oldValue, newValue) -> {
+        	nbJoueur = Integer.parseInt(newValue);
+        });
+                
+        Label labelTaillePlateau = new Label("Taille du plateau :");
+        TextField fieldTaillePlateau = new TextField();
+        fieldTaillePlateau.textProperty().addListener((observable, oldValue, newValue) -> {
+        	taillePlateau = Integer.parseInt(newValue);
+        });
+        
+        Label labelTime = new Label("Durée de la partie :");
+        TextField fieldTime = new TextField();
+        fieldTime.textProperty().addListener((observable, oldValue, newValue) -> {
+        	time = Integer.parseInt(newValue);
+        });
+        
+        Button buttonSubmit = creerButtonStartConfig("Start");
+        
+        root.add(labelNbJoueurs, 0, 1);
+        root.add(labelTaillePlateau, 0, 2);
+        root.add(labelTime, 0, 3);
+        root.add(fieldNbJoueurs, 1, 1);
+        root.add(fieldTaillePlateau, 1, 2);
+        root.add(fieldTime, 1, 3);
+        root.add(buttonSubmit, 1, 4);
+        
+    	Scene scene = new Scene(root, 900, 450);
+
+        //Modification du titre de la scène
+        stage.setTitle("Configuration du jeu");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+    
+    private Button creerButtonStartConfig(String s) {
+        Button button = new Button(s);
+        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setOnMouseClicked(e -> {
+            try {
+				jouerPreferences();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+        });
+        return button;
+    }
+    
+    public void jouerPreferences() throws IOException{
+    	new ChargerConfig();
+    	ChargerConfig.setNombreJoueur(nbJoueur);
+    	ChargerConfig.setTaillePlateau(taillePlateau);
+    	ChargerConfig.setTimerSeconde(time);
+        new GestionTour(this).start();
+    }
+    
+    
+    
     @Override
     public void setTour(Tour tour) throws IOException {
         this.grilleLettres = new GrilleLettres();
@@ -234,11 +417,7 @@ public class Plateau extends Application implements EtatJeuListener {
         Button button = new Button(s);
         button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
         button.setOnMouseClicked(e -> {
-            try {
-                startBienvenue();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            startSelectMode();
         });
         return button;
     }
