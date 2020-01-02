@@ -227,19 +227,40 @@ public class Plateau extends Application implements EtatJeuListener {
 		Label labelNbJoueurs = new Label("Nombre de joueur(s) :");
 		TextField fieldNbJoueurs = new TextField();
 		fieldNbJoueurs.textProperty().addListener((observable, oldValue, newValue) -> {
-			nbJoueur = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try {
+					nbJoueur = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+					System.out.println(e.getMessage());
+					fieldNbJoueurs.setText("");
+				}
+			}
 		});
 
 		Label labelTaillePlateau = new Label("Taille du plateau :");
 		TextField fieldTaillePlateau = new TextField();
 		fieldTaillePlateau.textProperty().addListener((observable, oldValue, newValue) -> {
-			taillePlateau = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try {
+					taillePlateau = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+				System.out.println(e.getMessage());
+				fieldNbJoueurs.setText("");
+			}
+			}
 		});
 
 		Label labelTime = new Label("Durée de la partie :");
 		TextField fieldTime = new TextField();
 		fieldTime.textProperty().addListener((observable, oldValue, newValue) -> {
-			time = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try{
+					time = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+					System.out.println(e.getMessage());
+					fieldNbJoueurs.setText("");
+				}
+			}
 		});
 
 		Button buttonSubmit = creerButtonStartConfig("Start");
