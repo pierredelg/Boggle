@@ -380,7 +380,7 @@ public class Plateau extends Application implements EtatJeuListener {
 		labelScore.setAlignment(Pos.CENTER);
 		labelScore.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
 
-		Label labelWinner = new Label("Le gagnant est : ");
+		Label labelWinner = new Label();
 		labelWinner.setMinWidth(520);
 		labelWinner.setMinHeight(100);
 		labelWinner.setAlignment(Pos.CENTER);
@@ -411,21 +411,49 @@ public class Plateau extends Application implements EtatJeuListener {
 					HighScore.addHighScore(new HighScore(tour.getJoueur().getScore(),
 							(name.length() > 10) ? name.substring(0, 10) : name));
 			}
+		}
 
+		// Désignation du gagnant
+		ArrayList<Tour> winner = new ArrayList<>();
+		for (Tour tour : tourList) {
+			if (winner.isEmpty()) {
+				winner.add(tour);
+			} else {
+				if (tour.getJoueur().getScore() > winner.get(0).getJoueur().getScore()) {
+					winner.clear();
+					winner.add(tour);
+				} else {
+					if (tour.getJoueur().getScore() == winner.get(0).getJoueur().getScore()) {
+						winner.add(tour);
+					}
+				}
+			}
+		}
+		
+		String resultWinner = "";		
+		for (Tour tour : winner) {
+			if(tourList.size()>1) {
+				if (winner.size() == 1) {
+					resultWinner += "Le vainqueur est : " + tour.getJoueur().getName() + "\nFélicitations !!!";
+				}
+				else {
+					resultWinner += "Il n'y a pas de vainqueur";
+					break;
+				}
+			}
 		}
 
 		// Récupération des Highscores
 		String highscores = "Les 10 meilleurs scores :\n\n\n";
 		for (int i = 0; i < HighScore.getHighScores().length; i++) {
 			if (HighScore.getHighScores()[i].getScore() != 0) {
-				// System.out.println(HighScore.getHighScores()[i].getName() + " " +
-				// HighScore.getHighScores()[i].getScore());
 				highscores += HighScore.getHighScores()[i].getName() + "  " + HighScore.getHighScores()[i].getScore()
 						+ " points\n";
 			}
 		}
 
 		labelScore.setText(result);
+		labelWinner.setText(resultWinner);
 		labelHighScore.setText(highscores);
 
 		Button buttonRecommencer = creerButtonRecommencer("Recommencer");
