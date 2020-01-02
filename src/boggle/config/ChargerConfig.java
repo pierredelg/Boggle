@@ -72,7 +72,39 @@ public class ChargerConfig {
         return nombreJoueur;
     }
 
-    public static int getTaillePlateau() {
+    public static void setNombreJoueur(int nombreJoueur) {
+		ChargerConfig.nombreJoueur = nombreJoueur;
+	}
+
+	public static void setTaillePlateau(int taillePlateau) {
+		ChargerConfig.taillePlateau = taillePlateau;
+	}
+
+	public static void setTailleMinMot(int tailleMinMot) {
+		ChargerConfig.tailleMinMot = tailleMinMot;
+	}
+
+	public static void setDes(String des) {
+		ChargerConfig.des = des;
+	}
+
+	public static void setDictionnaire(String dictionnaire) {
+		ChargerConfig.dictionnaire = dictionnaire;
+	}
+
+	public static void setArbreLexicalLudo(ArbreLexicalLudo arbreLexicalLudo) {
+		ChargerConfig.arbreLexicalLudo = arbreLexicalLudo;
+	}
+
+	public static void setPoints(int[] points) {
+		ChargerConfig.points = points;
+	}
+
+	public static void setTimerSeconde(int timerSeconde) {
+		ChargerConfig.timerSeconde = timerSeconde;
+	}
+
+	public static int getTaillePlateau() {
         return taillePlateau;
     }
 
