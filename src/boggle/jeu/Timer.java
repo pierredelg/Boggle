@@ -19,8 +19,8 @@ import java.io.IOException;
 
 public class Timer {
 
-    private static final Integer STARTMINUTE = ChargerConfig.getTimerSeconde() / 60;
-    private static final Integer STARTSECONDE = ChargerConfig.getTimerSeconde() % 60;
+    private Integer STARTMINUTE = ChargerConfig.getTimerSeconde() / 60;
+    private Integer STARTSECONDE = ChargerConfig.getTimerSeconde() % 60;
     private Timeline timeline;
     private Label timerLabel = new Label();
     private Integer timeSeconds = STARTSECONDE;

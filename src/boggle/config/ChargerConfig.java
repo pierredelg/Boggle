@@ -100,8 +100,8 @@ public class ChargerConfig {
 		ChargerConfig.points = points;
 	}
 
-	public static void setTimerSeconde(int timerSeconde) {
-		ChargerConfig.timerSeconde = timerSeconde;
+	public static void setTimerSeconde(int timer) {
+		ChargerConfig.timerSeconde = timer;
 	}
 
 	public static int getTaillePlateau() {

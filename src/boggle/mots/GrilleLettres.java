@@ -79,14 +79,13 @@ public class GrilleLettres extends GridPane {
             }
             disableAllButton();
             ArrayList<Button> validButtons = enableSomeButton(ligne, colonne);
-            ArrayList<String> motsPossibles = new ArrayList<>();
+
             //On met à jour la liste des mots possibles
             if(mot.length() >= ChargerConfig.getTailleMinMot()){
-                motsPossibles = setHelpList(validButtons);
+                ArrayList<String> motsPossibles = setHelpList(validButtons);
+                //On colore les boutons
                 colorHelpButton(validButtons, helpLetterList(motsPossibles));
             }
-
-
         });
         return button;
     }
@@ -179,6 +178,7 @@ public class GrilleLettres extends GridPane {
     }
 
     public void colorHelpButton(ArrayList<Button> validButtons, List<Character> characters){
+        //Pour chaque boutons valides on vérifie que son caractere est présent dans la liste des caractère
         for(int i = 0 ; i < validButtons.size();i++){
             Button button = validButtons.get(i);
             Character characterButton = button.getText().charAt(0);
