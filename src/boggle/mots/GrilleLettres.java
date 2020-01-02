@@ -5,8 +5,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import java.io.IOException;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GrilleLettres extends GridPane {
@@ -18,8 +19,11 @@ public class GrilleLettres extends GridPane {
     private Label labelMotEnCours;
     private Button buttonAjouter;
     private List<Integer> buttonListCheck = new ArrayList<>();
+    private String BUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px;";
+    private String HELPBUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px; -fx-background-color: orange";
+    private String LABELSTYLE = "-fx-border-width: 2px; -fx-border-color: black";
 
-    public GrilleLettres() throws IOException {
+    public GrilleLettres() {
         this.taillePlateau = ChargerConfig.getTaillePlateau();
         this.etatPlateauChar = new String[taillePlateau][taillePlateau];
         this.gridPane = generateGrille();
@@ -53,7 +57,7 @@ public class GrilleLettres extends GridPane {
         labelMotEnCours = new Label();
         labelMotEnCours.setMinWidth(80 * taillePlateau);
         labelMotEnCours.setMinHeight(50);
-        labelMotEnCours.setStyle("-fx-border-width: 2px; -fx-border-color: black");
+        labelMotEnCours.setStyle(LABELSTYLE);
         return labelMotEnCours;
     }
 
@@ -62,8 +66,9 @@ public class GrilleLettres extends GridPane {
         Button button = new Button(s);
         button.setMinWidth(80);
         button.setMinHeight(80);
-        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setStyle(BUTTONSTYLE);
         button.setOnMouseClicked(e -> {
+            resetColorButton();
             String mot = labelMotEnCours.getText();
             mot += s;
             labelMotEnCours.setText(mot);
@@ -73,35 +78,21 @@ public class GrilleLettres extends GridPane {
                 buttonAjouter.setDisable(false);
             }
             disableAllButton();
-            ArrayList<Button> validButtons = enableSomeButton(ligne, colonne, true);
-            if(labelMotEnCours.getText().length() >= ChargerConfig.getTailleMinMot()){
-                //TODO ajouter aide contextuelle
-                String debutMot = labelMotEnCours.getText();
-                int longueurMot = debutMot.length();
-                ArrayList<String> possibilitésMots = new ArrayList<>();
-                //On récupere tout les mots commençant par les lettres selectionnées
-                ChargerConfig.getArbreLexical().motsCommencantPar(debutMot,possibilitésMots);
-                char lettreAide;
-                if(!possibilitésMots.isEmpty() && possibilitésMots.get(0) != null && possibilitésMots.get(0).length() >= longueurMot) {
-                    lettreAide = possibilitésMots.get(0).charAt(longueurMot);
-                    validButtons.stream().forEach(button1 -> {if(button1.getText().equals(lettreAide)){
-                        button1.setStyle("-fx-background-color: red");
-                    }});
-                }
+            ArrayList<Button> validButtons = enableSomeButton(ligne, colonne);
+            ArrayList<String> motsPossibles = new ArrayList<>();
+            //On met à jour la liste des mots possibles
+            if(mot.length() >= ChargerConfig.getTailleMinMot()){
+                motsPossibles = setHelpList(validButtons);
+                colorHelpButton(validButtons, helpLetterList(motsPossibles));
             }
+
+
         });
         return button;
     }
 
-    //Permet de désactiver tout les bouttons du gridpane
-    public void disableAllButton() {
-        for (Integer i : emplacementButton) {
-            gridPane.getChildren().get(i).setDisable(true);
-        }
-    }
-
     //Active certain boutton
-    private ArrayList<Button> enableSomeButton(int ligne, int colonne, boolean aide) {
+    private ArrayList<Button> enableSomeButton(int ligne, int colonne) {
         ArrayList<Button> validButtons = new ArrayList<>();
 
         for (int l = -1; l < 2; l++) {
@@ -113,8 +104,9 @@ public class GrilleLettres extends GridPane {
                         int colonneBis = colonne + c;
                         int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
                         if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
-                            validButtons.add((Button) gridPane.getChildren().get(buttonCible));
-                            gridPane.getChildren().get(buttonCible).setDisable(false);
+                            Button button = (Button) gridPane.getChildren().get(buttonCible);
+                            validButtons.add(button);
+                            button.setDisable(false);
                         }
                     }
                 } else {
@@ -122,24 +114,99 @@ public class GrilleLettres extends GridPane {
                     int colonneBis = colonne + c;
                     int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
                     if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
-                        validButtons.add((Button) gridPane.getChildren().get(buttonCible));
-                        gridPane.getChildren().get(buttonCible).setDisable(false);
+                        Button button = (Button) gridPane.getChildren().get(buttonCible);
+                        validButtons.add(button);
+                        button.setDisable(false);
                     }
                 }
             }
         }
         for (Integer i : buttonListCheck) {
-            gridPane.getChildren().get(i).setDisable(true);
+            Button button = (Button) gridPane.getChildren().get(i);
+            validButtons.remove(button);
+            button.setDisable(true);
+
         }
-        gridPane.getChildren().get((ligne - 1) * this.taillePlateau + colonne - 1).setDisable(true);
+        Button button = (Button) gridPane.getChildren().get((ligne - 1) * this.taillePlateau + colonne - 1);
+        validButtons.remove(button);
+        button.setDisable(true);
         return validButtons;
+    }
+
+    public ArrayList<String> setHelpList(ArrayList<Button> validButtons){
+        //On crée la liste à renvoyer
+        ArrayList<String> helpList = new ArrayList<>();
+
+        //On récupere le mot en cours créé par le joueur
+        String motEncours = labelMotEnCours.getText();
+        int longueurDuMotEnCours = motEncours.length();
+
+        //On récupere tout les mots du dictionnaire commençant par le mot en cours
+        ArrayList<String> possibilitesMots = new ArrayList<>();
+        ChargerConfig.getArbreLexical().motsCommencantPar(motEncours,possibilitesMots);
+
+        ArrayList<Character> lettresPossibles = new ArrayList<>();
+
+        //On récupere la liste des lettres possibles
+        validButtons.forEach(button1 -> lettresPossibles.add(button1.getText().charAt(0)));
+
+        //On parcourt la liste des mots possibles
+        //On ajoute à la liste à renvoyer les mots possible à construire avec les lettres suivantes
+        for(int i = 0 ; i < possibilitesMots.size();  i++){
+
+            String motPossible = possibilitesMots.get(i);
+
+            if(motPossible.equals(motEncours) || (motPossible.length() > longueurDuMotEnCours &&
+                    lettresPossibles.contains(motPossible.charAt(longueurDuMotEnCours)))){
+                helpList.add(motPossible);
+            }
+        }
+        return helpList;
+    }
+
+    public List<Character> helpLetterList(List<String> helpList){
+
+        HashSet<Character> characters = new HashSet<>();
+        String motEncours = labelMotEnCours.getText();
+        int longueurDuMotEnCours = motEncours.length();
+
+        for (String mot : helpList){
+            if(mot.length() > longueurDuMotEnCours) {
+                characters.add(mot.charAt(longueurDuMotEnCours));
+            }
+        }
+        return new ArrayList<>(characters);
+    }
+
+    public void colorHelpButton(ArrayList<Button> validButtons, List<Character> characters){
+        for(int i = 0 ; i < validButtons.size();i++){
+            Button button = validButtons.get(i);
+            Character characterButton = button.getText().charAt(0);
+            if(characters.contains(characterButton)){
+                button.setStyle(HELPBUTTONSTYLE);
+            }
+        }
     }
 
 
     //Active tout les bouttons du gridpane
     public void enableAllButton() {
         for (Integer i : emplacementButton) {
-            gridPane.getChildren().get(i).setDisable(false);
+            Button button = (Button) gridPane.getChildren().get(i);
+            button.setDisable(false);
+        }
+    }
+
+    //Permet de désactiver tout les bouttons du gridpane
+    public void disableAllButton() {
+        for (Integer i : emplacementButton) {
+            gridPane.getChildren().get(i).setDisable(true);
+        }
+    }
+
+    public void resetColorButton(){
+        for (Integer i : emplacementButton) {
+            gridPane.getChildren().get(i).setStyle(BUTTONSTYLE);
         }
     }
 

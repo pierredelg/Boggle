@@ -41,7 +41,7 @@ public class Plateau extends Application implements EtatJeuListener {
 		launch(args);
 	}
 
-	// 2 ème Page de bienvenue
+	//Page de bienvenue
 	public void start(Stage stage) {
 		this.stage = stage;
 		Label labelResume = new Label();
@@ -200,19 +200,29 @@ public class Plateau extends Application implements EtatJeuListener {
 		});
 		return button;
 	}
+	public Button bouttonRetour(){
+		Button button = new Button("Retour");
+		button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+		button.setOnMouseClicked(e -> {
+			startSelectMode();
+		});
+		return button;
+	}
 
 	public void jouerConfig() throws IOException {
-		GridPane root = new GridPane();
-		root.setPadding(new Insets(20));
-		root.setHgap(25);
-		root.setVgap(15);
+		VBox vBoxRoot = new VBox();
+		vBoxRoot.setPadding(new Insets(15,20, 10,10));
+		GridPane gridPaneContent = new GridPane();
+		gridPaneContent.setPadding(new Insets(10));
+		gridPaneContent.setHgap(30);
+		gridPaneContent.setVgap(10);
 
 		Label labelTitle = new Label("Veuillez sélectionner vos préférences");
 		labelTitle.setMinSize(900, 100);
 		labelTitle.setAlignment(Pos.CENTER);
 		labelTitle.setStyle("-fx-font-size: 35; -fx-font-weight: bold;");
 
-		root.add(labelTitle, 0, 0, 2, 1);
+		gridPaneContent.add(labelTitle, 0, 0, 2, 1);
 
 		Label labelNbJoueurs = new Label("Nombre de joueur(s) :");
 		TextField fieldNbJoueurs = new TextField();
@@ -234,15 +244,27 @@ public class Plateau extends Application implements EtatJeuListener {
 
 		Button buttonSubmit = creerButtonStartConfig("Start");
 
-		root.add(labelNbJoueurs, 0, 1);
-		root.add(labelTaillePlateau, 0, 2);
-		root.add(labelTime, 0, 3);
-		root.add(fieldNbJoueurs, 1, 1);
-		root.add(fieldTaillePlateau, 1, 2);
-		root.add(fieldTime, 1, 3);
-		root.add(buttonSubmit, 1, 4);
+		Button buttonBack = bouttonRetour();
 
-		Scene scene = new Scene(root, 900, 450);
+		gridPaneContent.add(labelNbJoueurs, 0, 1);
+		gridPaneContent.add(labelTaillePlateau, 0, 2);
+		gridPaneContent.add(labelTime, 0, 3);
+		gridPaneContent.add(fieldNbJoueurs, 1, 1);
+		gridPaneContent.add(fieldTaillePlateau, 1, 2);
+		gridPaneContent.add(fieldTime, 1, 3);
+
+		HBox hBoxButton = new HBox();
+		hBoxButton.setSpacing(150);
+		hBoxButton.setAlignment(Pos.CENTER);
+		hBoxButton.getChildren().add(buttonSubmit);
+		hBoxButton.getChildren().add(buttonBack);
+
+		vBoxRoot.getChildren().add(gridPaneContent);
+		vBoxRoot.getChildren().add(hBoxButton);
+
+
+
+		Scene scene = new Scene(vBoxRoot, 950, 450);
 
 		// Modification du titre de la scène
 		stage.setTitle("Configuration du jeu");
@@ -528,6 +550,6 @@ public class Plateau extends Application implements EtatJeuListener {
 	}
 
 	public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
-		return ChargerConfig.getArbreLexicalLudo().contient(motEnCours);
+		return ChargerConfig.getArbreLexical().contient(motEnCours);
 	}
 }

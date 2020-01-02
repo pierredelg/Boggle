@@ -92,8 +92,8 @@ public class ChargerConfig {
 		ChargerConfig.dictionnaire = dictionnaire;
 	}
 
-	public static void setArbreLexicalLudo(ArbreLexicalLudo arbreLexicalLudo) {
-		ChargerConfig.arbreLexicalLudo = arbreLexicalLudo;
+	public static void setArbreLexical(ArbreLexical arbreLexical) {
+		ChargerConfig.arbreLexical = arbreLexical;
 	}
 
 	public static void setPoints(int[] points) {
