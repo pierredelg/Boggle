@@ -1,6 +1,7 @@
 package boggle.mots;
 
 import boggle.config.ChargerConfig;
+import boggle.jeu.AideContextuelle;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,7 +21,6 @@ public class GrilleLettres extends GridPane {
     private Button buttonAjouter;
     private List<Integer> buttonListCheck = new ArrayList<>();
     private String BUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px;";
-    private String HELPBUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px; -fx-background-color: orange";
     private String LABELSTYLE = "-fx-border-width: 2px; -fx-border-color: black";
 
     public GrilleLettres() {
@@ -80,11 +80,11 @@ public class GrilleLettres extends GridPane {
             disableAllButton();
             ArrayList<Button> validButtons = enableSomeButton(ligne, colonne);
 
-            //On met à jour la liste des mots possibles
+            //On crée une aide contextuelle pour le mot en cours
             if(mot.length() >= ChargerConfig.getTailleMinMot()){
-                ArrayList<String> motsPossibles = setHelpList(validButtons);
+                AideContextuelle aideContextuelle = new AideContextuelle(mot,validButtons);
                 //On colore les boutons
-                colorHelpButton(validButtons, helpLetterList(motsPossibles));
+                aideContextuelle.colorHelpButton();
             }
         });
         return button;
@@ -131,63 +131,6 @@ public class GrilleLettres extends GridPane {
         button.setDisable(true);
         return validButtons;
     }
-
-    public ArrayList<String> setHelpList(ArrayList<Button> validButtons){
-        //On crée la liste à renvoyer
-        ArrayList<String> helpList = new ArrayList<>();
-
-        //On récupere le mot en cours créé par le joueur
-        String motEncours = labelMotEnCours.getText();
-        int longueurDuMotEnCours = motEncours.length();
-
-        //On récupere tout les mots du dictionnaire commençant par le mot en cours
-        ArrayList<String> possibilitesMots = new ArrayList<>();
-        ChargerConfig.getArbreLexical().motsCommencantPar(motEncours,possibilitesMots);
-
-        ArrayList<Character> lettresPossibles = new ArrayList<>();
-
-        //On récupere la liste des lettres possibles
-        validButtons.forEach(button1 -> lettresPossibles.add(button1.getText().charAt(0)));
-
-        //On parcourt la liste des mots possibles
-        //On ajoute à la liste à renvoyer les mots possible à construire avec les lettres suivantes
-        for(int i = 0 ; i < possibilitesMots.size();  i++){
-
-            String motPossible = possibilitesMots.get(i);
-
-            if(motPossible.equals(motEncours) || (motPossible.length() > longueurDuMotEnCours &&
-                    lettresPossibles.contains(motPossible.charAt(longueurDuMotEnCours)))){
-                helpList.add(motPossible);
-            }
-        }
-        return helpList;
-    }
-
-    public List<Character> helpLetterList(List<String> helpList){
-
-        HashSet<Character> characters = new HashSet<>();
-        String motEncours = labelMotEnCours.getText();
-        int longueurDuMotEnCours = motEncours.length();
-
-        for (String mot : helpList){
-            if(mot.length() > longueurDuMotEnCours) {
-                characters.add(mot.charAt(longueurDuMotEnCours));
-            }
-        }
-        return new ArrayList<>(characters);
-    }
-
-    public void colorHelpButton(ArrayList<Button> validButtons, List<Character> characters){
-        //Pour chaque boutons valides on vérifie que son caractere est présent dans la liste des caractère
-        for(int i = 0 ; i < validButtons.size();i++){
-            Button button = validButtons.get(i);
-            Character characterButton = button.getText().charAt(0);
-            if(characters.contains(characterButton)){
-                button.setStyle(HELPBUTTONSTYLE);
-            }
-        }
-    }
-
 
     //Active tout les bouttons du gridpane
     public void enableAllButton() {
