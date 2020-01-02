@@ -1,7 +1,7 @@
 package boggle.config;
 
 import boggle.config.exceptions.InvalidNameConfig;
-import boggle.mots.ArbreLexicalLudo;
+import boggle.mots.ArbreLexical;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,7 +14,7 @@ public class ChargerConfig {
     private static int tailleMinMot;
     private static String des;
     private static String dictionnaire;
-    private static ArbreLexicalLudo arbreLexicalLudo;
+    private static ArbreLexical arbreLexical;
     private static int[] points;
     private static int timerSeconde;
 
@@ -49,7 +49,7 @@ public class ChargerConfig {
                     break;
                 case "dictionnaire":
                     dictionnaire = split[1].trim();
-                    arbreLexicalLudo = ArbreLexicalLudo.lireMots("config/"+dictionnaire);
+                    arbreLexical = ArbreLexical.lireMots("config/"+dictionnaire);
                     break;
                 case "points":
                     split = split[1].split(",");
@@ -92,8 +92,8 @@ public class ChargerConfig {
 		ChargerConfig.dictionnaire = dictionnaire;
 	}
 
-	public static void setArbreLexicalLudo(ArbreLexicalLudo arbreLexicalLudo) {
-		ChargerConfig.arbreLexicalLudo = arbreLexicalLudo;
+	public static void setArbreLexical(ArbreLexical arbreLexical) {
+		ChargerConfig.arbreLexical = arbreLexical;
 	}
 
 	public static void setPoints(int[] points) {
@@ -124,8 +124,8 @@ public class ChargerConfig {
         return points;
     }
 
-    public static ArbreLexicalLudo getArbreLexicalLudo() {
-        return arbreLexicalLudo;
+    public static ArbreLexical getArbreLexical() {
+        return arbreLexical;
     }
 
     public static int getTimerSeconde() {
