@@ -2,52 +2,52 @@ package boggle.jeu;
 
 import boggle.config.ChargerConfig;
 
-public class Joueur {
+public abstract class Joueur {
 
-	private String name;
-	private int score = 0;
-	
-	public Joueur(String name) {
-		this.name = name;
-	}
+    private String name;
+    private int score = 0;
 
-	public String getName() {
-		return name;
-	}
+    public Joueur(String name) {
+        this.name = name;
+    }
 
-	public void updateScore(String mot) {
+    public String getName() {
+        return name;
+    }
 
-		int taille = mot.length();
-		int[] points = ChargerConfig.getPoints();
+    public void updateScore(String mot) {
 
-		switch (taille){
-			case 3 :
-				this.score += points[0];
-				break;
-			case 4:
-				this.score += points[1];
-				break;
-			case 5:
-				this.score += points[2];
-				break;
-			case 6:
-				this.score += points[3];
-				break;
-			case 7:
-				this.score += points[4];
-				break;
-			default:
-				if(taille > 7)
-					this.score += points[5];
-		}
-	}
+        int taille = mot.length();
+        int[] points = ChargerConfig.getPoints();
 
-	public int getScore() {
-		return score;
-	}
+        switch (taille){
+            case 3 :
+                this.score += points[0];
+                break;
+            case 4:
+                this.score += points[1];
+                break;
+            case 5:
+                this.score += points[2];
+                break;
+            case 6:
+                this.score += points[3];
+                break;
+            case 7:
+                this.score += points[4];
+                break;
+            default:
+                if(taille > 7)
+                    this.score += points[5];
+        }
+    }
 
-	@Override
-	public String toString() {
-		return name + " obtient un score de " + score + " points";
-	}
+    public int getScore() {
+        return score;
+    }
+
+    @Override
+    public String toString() {
+        return name + " obtient un score de " + score + " points";
+    }
 }

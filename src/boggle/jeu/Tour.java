@@ -10,7 +10,7 @@ public class Tour implements TourListener {
 
     public Tour(NextTourListener nextTourListener, Joueur joueur){
         this.nextTourListener = nextTourListener;
-        this.joueur =  joueur;
+        this.joueur = joueur;
         this.timer = new Timer(this);
     }
 
