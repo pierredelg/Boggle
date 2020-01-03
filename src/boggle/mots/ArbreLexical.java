@@ -1,179 +1,205 @@
 package boggle.mots;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-/** La classe ArbreLexical permet de stocker de façon compacte et
- * d'accéder rapidement à un ensemble de mots.*/
+/**
+ * La classe ArbreLexical permet de stocker de façon compacte et
+ * d'accéder rapidement à un ensemble de mots.
+ */
 public class ArbreLexical {
-    public static final int TAILLE_ALPHABET = 26 ;
-    private boolean estMot ; // vrai si le noeud courant est la fin d'un mot valide
-    private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET] ; // les sous-arbres
-    private char caractere;
-    
-    /** Crée un arbre vide (sans aucun mot) */
+
+    public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static final int TAILLE_ALPHABET = ALPHABET.length();
+
+    private boolean estMot; // vrai si le noeud courant est la fin d'un mot valide
+    private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET]; // les sous-arbres
+
+    /**
+     * Crée un arbre vide (sans aucun mot)
+     */
     public ArbreLexical() {
-        this.caractere = ' ';
-        //On initialise le tableau d'arbre fils avec toute les lettres de l'alphabet
-        char c1 = 'a';
-        for(int i = 0;i<fils.length;i++){
-            fils[i] = new ArbreLexical(c1);
-            c1++;
-        }
-    }
-    public ArbreLexical(char caractere){
-        this.caractere = caractere;
+        estMot = false;
     }
 
-    /** Indique si le noeud courant est situé à l'extrémité d'un mot
-     * valide */
-    public boolean estMot() { return estMot ; }
-    
-    
-    /** Place le mot spécifié dans l'arbre
+    /**
+     * Indique si le noeud courant est situé à l'extrémité d'un mot
+     * valide
+     */
+    public boolean estMot() {
+        return estMot;
+    }
+
+    /**
+     * Place le mot spécifié dans l'arbre
+     *
      * @return <code>true</code> si le mot a été ajouté,
-     * <code>false</code> sinon*/
+     * <code>false</code> sinon
+     */
     public boolean ajouter(String word) {
-        //Si le mot est une seule lettre on change le booleen à true
-        if(word.length() == 1){
-            this.estMot = true;
+        //Si on arrive à la fin du mot on passe le booleen à true et on retourne true
+        if (word.length() == 0) {
+            estMot = true;
             return true;
+        } else {
+            //Sinon on crée l'arbre fils avec le mot grace à la méthode suivant
+            ArbreLexical fils = suivant(word, true);
+            //On ajoute le mot en retirant la premiere lettre à l'arbre fils
+            return fils != null && fils.ajouter(word.substring(1));
         }
-        //On récupere la premiere lettre du mot
-        char premiereLettre = word.charAt(0);
-
-        //On recupere l'indice de la lettre dans le tableau d'arbre fils
-        // -1 si la lettre n'est pas présente
-        int indiceFils = lettreContenuDansFils(premiereLettre);
-
-        if(indiceFils == -1){
-            //le tableau fils est null on crée un nouveau tableau
-            if(this.fils == null){
-                this.fils = new ArbreLexical[1];
-            }else {
-                //Sinon on agrandi le tableau existant
-                this.fils = agrandiTab(this.fils);
-            }
-            //on ajoute la lettre au premier membre
-            this.fils[0] = new ArbreLexical(premiereLettre);
-            indiceFils = 0;
-        }
-        //On ajoute la fin du mot sur l'arbre au bon indice
-        return this.fils[indiceFils].ajouter(word.substring(1));
     }
 
-
-    //Méthode qui permet de retourner l'indice dans le tableau des fils
-    // où se trouve la lettre donnée en parametre
-    private int lettreContenuDansFils (char c){
-        if(this.fils != null) {
-            for (int i = 0; i < fils.length; i++) {
-                if (fils[i] != null && fils[i].caractere == c) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    //Méthode permettant d'agrandir le tableau en laissant libre le premier élément
-    private ArbreLexical [] agrandiTab(ArbreLexical [] tab){
-        ArbreLexical [] resultat;
-        resultat = new ArbreLexical[tab.length + 1];
-        for(int i = 0, j = 1 ; i < tab.length ; i++ , j++){
-            resultat[j] = tab[i];
-        }
-        return resultat;
-    }
-
-    /** Teste si l'arbre lexical contient le mot spécifié.
-        @return <code>true</code> si <code>o</code> est un mot
-        (String) contenu dans l'arbre, <code>false</code> si
-        <code>o</code> n'est pas une instance de String ou si le mot
-        n'est pas dans l'arbre lexical. */
+    /**
+     * Teste si l'arbre lexical contient le mot spécifié.
+     *
+     * @return <code>true</code> si <code>o</code> est un mot
+     * (String) contenu dans l'arbre, <code>false</code> si
+     * <code>o</code> n'est pas une instance de String ou si le mot
+     * n'est pas dans l'arbre lexical.
+     */
     public boolean contient(String word) {
-        if(word.length() != 0) {
-        	int index = indexOfFirstLetter(word);
-        	if (fils[index] == null) {
-				return false;
-			}
-        	String firstLetterLess = word.substring(1);
-        	return fils[index].contient(firstLetterLess);
-        }else {
-        	return estMot();
+        //Si on est à la fin du mot on retourne le booleen estMot
+        if (word.length() == 0) {
+            return estMot;
+        } else {
+            //Sinon on récupere l'arbre fils à l'indice de la premiere lettre
+            ArbreLexical fils = suivant(word, false);
+            //On vérifie si l'arbre fils contient le mot à partir de la lettre suivante
+            //Si l'arbre fils est null on retourne faux
+            return fils != null && fils.contient(word.substring(1));
         }
-    }
-    
-    private static int indexOfFirstLetter(String word) {
-		char firstCharacter = 'a';
-		int firstChar = (int) firstCharacter;
-		char currentCharacter = word.charAt(0);
-		int currentChar = (int) currentCharacter;
-		int index = currentChar - firstChar;
-    	return index;
     }
 
-    /** Ajoute à la liste <code>resultat<code> tous les mots de
-     * l'arbre commençant par le préfixe spécifié. 
+    /**
+     * Ajoute à la liste <code>resultat<code> tous les mots de
+     * l'arbre commençant par le préfixe spécifié.
+     *
      * @return <code>true</code> si <code>resultat</code> a été
-     * modifié, <code>false</code> sinon.*/
+     * modifié, <code>false</code> sinon.
+     */
     public boolean motsCommencantPar(String prefixe, List<String> resultat) {
-//        int letter = indexOfFirstLetter(prefixe);
-//        ArbreLexical arbreLexical = fils[letter];
-//        String prefixeLetter = prefixe.substring(1);
-        
-        return false ;
-    }
-    
-    /** Crée un arbre lexical qui contient tous les mots du fichier
-     * spécifié. */
-    public static ArbreLexical lireMots(String fichier) {
-    	BufferedReader reader;
-        ArbreLexical tree = new ArbreLexical();
-        try
-        {
-            reader = new BufferedReader(new FileReader(fichier));
-            String word = reader.readLine();
-            while (word != null)
-            {	//tant qu'il y a un mot je l'ajoute à l'arbre.
-                tree.ajouter(word);
-                word = reader.readLine();
-            }
-            reader.close();
+        if (prefixe == null || prefixe.length() == 0) {
+            return explorer("", resultat);
+        } else {
+            ArbreLexical suivant = suivant(prefixe, false);
+            return suivant != null && suivant.motsCommencantPar(prefixe.substring(1), "" + prefixe.charAt(0), resultat);
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+    }
+
+    private boolean motsCommencantPar(String prefixe, String path, List<String> resultat) {
+        if (prefixe.length() == 0) {
+            return explorer(path, resultat);
+        } else {
+            ArbreLexical suivant = suivant(prefixe, false);
+            return suivant != null && suivant.motsCommencantPar(prefixe.substring(1), path + prefixe.charAt(0), resultat);
+        }
+    }
+
+    private boolean explorer(String prefixe, List<String> resultat) {
+        boolean modif = false;
+        if (estMot) {
+            resultat.add(prefixe);
+            modif = true;
+        }
+        ArbreLexical suivant;
+        for (int i = 0; i < ALPHABET.length(); i++) {
+            suivant = fils[i];
+            if (suivant != null) {
+                modif |= suivant.explorer(prefixe + ALPHABET.charAt(i), resultat);
+            }
+        }
+        return modif;
+    }
+
+    /**
+     * return le fils suivant pour le parcours de l'arbre
+     *
+     * @param word mots a parcourir
+     * @param creer booleen pour savoir si on parcourt ou si on crée un arbre
+     * @return null si pas une lettre sinon le fils suivant
+     */
+    private ArbreLexical suivant(String word, boolean creer) {
+
+        //On récupere l'index de la premiere lettre du mot
+        int idx = numeroAlphabetic(word);
+        //Si l'index vaut -1 c'est que ce n'est pas une lettre
+        //On retourne null
+        if (idx < 0) {
             return null;
         }
-        return tree;
-    }
-    
-    private boolean estUneFeuille(){
-        return this.fils == null || this.fils.length == 0;
-    }
-    public String toString(){
-
-        if(this.estUneFeuille()){
-           return "" + this.caractere;
-       }
-
-       String resultat = "";
-       for(ArbreLexical arbreLexical : fils){
-           if (arbreLexical != null) {
-               resultat += arbreLexical.toString();
-           }
-       }
-       return resultat;
+        //Si l'arbre fils n'existe pas dans le tableau alors on le crée
+        if (this.fils[idx] == null && creer) {
+            this.fils[idx] = new ArbreLexical();
+        }
+        //On retourne l'arbre fils à l'indice de la lettre
+        return this.fils[idx];
     }
 
-    public static void main(String[] args) {
-        ArbreLexical arbreLexical = new ArbreLexical();
-        System.out.println(arbreLexical);
-        arbreLexical.ajouter("marche");
-        System.out.println(arbreLexical);
+    /**
+     * return l'ordre alphabetique de la premiere lettre du mot
+     *
+     * @param word mots a parcourir
+     * @return -1 si pas une lettre sinon son ordre alphabetique
+     */
+    private int numeroAlphabetic(String word) {
+        return numeroAlphabetic(word.toUpperCase().charAt(0));
+    }
+
+    /**
+     * return l'ordre alphabetique de la lettre
+     *
+     * @param c lettre en majuscule
+     * @return -1 si pas une lettre sinon son ordre alphabetique
+     */
+    private int numeroAlphabetic(char c) {
+        return ALPHABET.indexOf(c);
+    }
+
+    /**
+     * Crée un arbre lexical qui contient tous les mots du fichier
+     * spécifié.
+     */
+    public static ArbreLexical lireMots(String fichier) throws FileNotFoundException {
+        BufferedReader reader = new BufferedReader(new FileReader(fichier));
+
+        final ArbreLexical arbre = new ArbreLexical();
+        String ligne;
+        try {
+            while((ligne = reader.readLine()) != null){
+                arbre.ajouter(ligne);
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return arbre;
+    }
+
+
+    public static void main(String[] args) throws FileNotFoundException {
+        String dictionnaire = "config/dict-fr.txt";
+        ArbreLexical arbre = ArbreLexical.lireMots(dictionnaire);
+
+        List<String> mots = new ArrayList<>();
+        arbre.motsCommencantPar("", mots);
+        System.out.println(mots);
+        mots.clear();
+        arbre.motsCommencantPar("T", mots);
+        System.out.println(mots);
+        mots.clear();
+
+        arbre.motsCommencantPar("Ve", mots);
+        System.out.println(mots);
+        mots.clear();
+
+        System.out.println(arbre.contient("hizavbchv"));
+        System.out.println(arbre.contient("ACCUMSAN"));
+        System.out.println(arbre.contient("tapote"));
 
     }
 }
+

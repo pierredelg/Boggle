@@ -16,14 +16,23 @@ public class GestionTour implements NextTourListener {
     public GestionTour(EtatJeuListener etatJeuListener) throws IOException {
         this.etatJeuListener = etatJeuListener;
         this.nbreJoueur = ChargerConfig.getNombreJoueur();
-        initialisationPartie();
+        initialisationPartie(false);
+    }
+    public GestionTour(EtatJeuListener etatJeuListener, boolean cpu) throws IOException {
+        this.etatJeuListener = etatJeuListener;
+        this.nbreJoueur = ChargerConfig.getNombreJoueur();
+        initialisationPartie(true);
     }
 
-    private void initialisationPartie() throws IOException {
+    private void initialisationPartie(boolean cpu) throws IOException {
 
         this.tourList = new ArrayList<>();
         for (int i = 1; i <= nbreJoueur; i++) {
-            this.tourList.add(new Tour(this, new Joueur("Joueur n° " + i)));
+            if(cpu && i == nbreJoueur){
+                this.tourList.add(new Tour(this,new OrdinateurBasique("Ordinateur")));
+            }else {
+                this.tourList.add(new Tour(this, new JoueurReel("Joueur n° " + i)));
+            }
         }
     }
 
@@ -36,6 +45,7 @@ public class GestionTour implements NextTourListener {
         tour++;
         if (tourList.size() > tour) {
             etatJeuListener.setTour(tourList.get(tour));
+
         } else {
             etatJeuListener.finDuJeu(tourList);
         }

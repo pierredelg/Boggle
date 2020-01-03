@@ -1,12 +1,16 @@
 package boggle.mots;
 
 import boggle.config.ChargerConfig;
+import boggle.jeu.AideContextuelle;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import java.io.IOException;
+import util.ButtonPerso;
+import util.Coord;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GrilleLettres extends GridPane {
@@ -18,8 +22,10 @@ public class GrilleLettres extends GridPane {
     private Label labelMotEnCours;
     private Button buttonAjouter;
     private List<Integer> buttonListCheck = new ArrayList<>();
+    private String BUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px;";
+    private String LABELSTYLE = "-fx-border-width: 2px; -fx-border-color: black";
 
-    public GrilleLettres() throws IOException {
+    public GrilleLettres() {
         this.taillePlateau = ChargerConfig.getTaillePlateau();
         this.etatPlateauChar = new String[taillePlateau][taillePlateau];
         this.gridPane = generateGrille();
@@ -53,7 +59,7 @@ public class GrilleLettres extends GridPane {
         labelMotEnCours = new Label();
         labelMotEnCours.setMinWidth(80 * taillePlateau);
         labelMotEnCours.setMinHeight(50);
-        labelMotEnCours.setStyle("-fx-border-width: 2px; -fx-border-color: black");
+        labelMotEnCours.setStyle(LABELSTYLE);
         return labelMotEnCours;
     }
 
@@ -62,8 +68,9 @@ public class GrilleLettres extends GridPane {
         Button button = new Button(s);
         button.setMinWidth(80);
         button.setMinHeight(80);
-        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+        button.setStyle(BUTTONSTYLE);
         button.setOnMouseClicked(e -> {
+            resetColorButton();
             String mot = labelMotEnCours.getText();
             mot += s;
             labelMotEnCours.setText(mot);
@@ -73,20 +80,21 @@ public class GrilleLettres extends GridPane {
                 buttonAjouter.setDisable(false);
             }
             disableAllButton();
-            enableSomeButton(ligne, colonne);
+            ArrayList<ButtonPerso> validButtons = enableSomeButton(ligne, colonne);
+
+            //On crée une aide contextuelle pour le mot en cours
+            if(mot.length() >= ChargerConfig.getTailleMinMot()){
+                AideContextuelle aideContextuelle = new AideContextuelle(mot,validButtons);
+                //On colore les boutons
+                aideContextuelle.colorHelpButton();
+            }
         });
         return button;
     }
 
-    //Permet de désactiver tout les bouttons du gridpane
-    public void disableAllButton() {
-        for (Integer i : emplacementButton) {
-            gridPane.getChildren().get(i).setDisable(true);
-        }
-    }
-
     //Active certain boutton
-    private void enableSomeButton(int ligne, int colonne) {
+    public ArrayList<ButtonPerso> enableSomeButton(int ligne, int colonne) {
+        ArrayList<ButtonPerso> validButtons = new ArrayList<>();
 
         for (int l = -1; l < 2; l++) {
             for (int c = colonne == 1 ? 0 : -1; c < 2; c++) {
@@ -96,29 +104,65 @@ public class GrilleLettres extends GridPane {
                         int ligneBis = ligne + l;
                         int colonneBis = colonne + c;
                         int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
-                        if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1)
-                            gridPane.getChildren().get(buttonCible).setDisable(false);
+                        if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
+                            Button button = (Button) gridPane.getChildren().get(buttonCible);
+                            validButtons.add(new ButtonPerso(button,new Coord(ligneBis,colonneBis)));
+                            button.setDisable(false);
+                        }
                     }
                 } else {
                     int ligneBis = ligne + l;
                     int colonneBis = colonne + c;
                     int buttonCible = ((ligneBis - 1) * this.taillePlateau) + colonneBis - 1;
-                    if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1)
-                        gridPane.getChildren().get(buttonCible).setDisable(false);
+                    if (buttonCible >= 0 && buttonCible <= this.taillePlateau * this.taillePlateau - 1) {
+                        Button button = (Button) gridPane.getChildren().get(buttonCible);
+                        validButtons.add(new ButtonPerso(button,new Coord(ligneBis,colonneBis)));
+                        button.setDisable(false);
+                    }
                 }
             }
         }
         for (Integer i : buttonListCheck) {
-            gridPane.getChildren().get(i).setDisable(true);
-        }
-        gridPane.getChildren().get((ligne - 1) * this.taillePlateau + colonne - 1).setDisable(true);
-    }
+            Button button = (Button) gridPane.getChildren().get(i);
+            removeValidButtonInList(button,validButtons);
+            button.setDisable(true);
 
+        }
+        int indice = (ligne - 1) * this.taillePlateau + colonne - 1;
+        if(indice > 0 && indice < gridPane.getChildren().size()) {
+            Button button = (Button) gridPane.getChildren().get(indice);
+            removeValidButtonInList(button,validButtons);
+            button.setDisable(true);
+        }
+        return validButtons;
+    }
+    public void removeValidButtonInList(Button button, List<ButtonPerso> buttonPersoList){
+        for (int i = 0 ; i < buttonPersoList.size();i++){
+            Button buttonFromList = buttonPersoList.get(i).getButton();
+            if(button.equals(buttonFromList)){
+                buttonPersoList.remove(buttonPersoList.get(i));
+            }
+        }
+    }
 
     //Active tout les bouttons du gridpane
     public void enableAllButton() {
         for (Integer i : emplacementButton) {
-            gridPane.getChildren().get(i).setDisable(false);
+            Button button = (Button) gridPane.getChildren().get(i);
+            button.setDisable(false);
+        }
+    }
+
+    //Permet de désactiver tout les bouttons du gridpane
+    public void disableAllButton() {
+        for (Integer i : emplacementButton) {
+            gridPane.getChildren().get(i).setDisable(true);
+        }
+    }
+
+    public void resetColorButton(){
+        for (Integer i : emplacementButton) {
+            gridPane.getChildren().get(i).setStyle(BUTTONSTYLE);
         }
     }
 
@@ -132,6 +176,10 @@ public class GrilleLettres extends GridPane {
 
     public Button getButtonAjouter() {
         return buttonAjouter;
+    }
+
+    public String[][] getEtatPlateauChar() {
+        return etatPlateauChar;
     }
 
     public void setButtonAjouter(Button buttonAjouter) {

@@ -4,12 +4,11 @@ import boggle.config.ChargerConfig;
 import boggle.jeu.*;
 import boggle.mots.GrilleLettres;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,7 +40,7 @@ public class Plateau extends Application implements EtatJeuListener {
 		launch(args);
 	}
 
-	// 2 ème Page de bienvenue
+	//Page de bienvenue
 	public void start(Stage stage) {
 		this.stage = stage;
 		Label labelResume = new Label();
@@ -185,7 +184,7 @@ public class Plateau extends Application implements EtatJeuListener {
 
 	public void jouerOneVersusCpu() throws IOException {
 		new ChargerConfig();
-		new GestionTour(this).start();
+		new GestionTour(this , true).start();
 	}
 
 	private Button creerButtonConfig(String s) {
@@ -200,49 +199,92 @@ public class Plateau extends Application implements EtatJeuListener {
 		});
 		return button;
 	}
+	public Button bouttonRetour(){
+		Button button = new Button("Retour");
+		button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+		button.setOnMouseClicked(e -> {
+			startSelectMode();
+		});
+		return button;
+	}
 
 	public void jouerConfig() throws IOException {
-		GridPane root = new GridPane();
-		root.setPadding(new Insets(20));
-		root.setHgap(25);
-		root.setVgap(15);
+		VBox vBoxRoot = new VBox();
+		vBoxRoot.setPadding(new Insets(15,20, 10,10));
+		GridPane gridPaneContent = new GridPane();
+		gridPaneContent.setPadding(new Insets(10));
+		gridPaneContent.setHgap(30);
+		gridPaneContent.setVgap(10);
 
 		Label labelTitle = new Label("Veuillez sélectionner vos préférences");
 		labelTitle.setMinSize(900, 100);
 		labelTitle.setAlignment(Pos.CENTER);
 		labelTitle.setStyle("-fx-font-size: 35; -fx-font-weight: bold;");
 
-		root.add(labelTitle, 0, 0, 2, 1);
+		gridPaneContent.add(labelTitle, 0, 0, 2, 1);
 
 		Label labelNbJoueurs = new Label("Nombre de joueur(s) :");
 		TextField fieldNbJoueurs = new TextField();
 		fieldNbJoueurs.textProperty().addListener((observable, oldValue, newValue) -> {
-			nbJoueur = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try {
+					nbJoueur = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+					System.out.println(e.getMessage());
+					fieldNbJoueurs.setText("");
+				}
+			}
 		});
 
 		Label labelTaillePlateau = new Label("Taille du plateau :");
 		TextField fieldTaillePlateau = new TextField();
 		fieldTaillePlateau.textProperty().addListener((observable, oldValue, newValue) -> {
-			taillePlateau = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try {
+					taillePlateau = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+				System.out.println(e.getMessage());
+				fieldNbJoueurs.setText("");
+			}
+			}
 		});
 
 		Label labelTime = new Label("Durée de la partie :");
 		TextField fieldTime = new TextField();
 		fieldTime.textProperty().addListener((observable, oldValue, newValue) -> {
-			time = Integer.parseInt(newValue);
+			if(newValue.length() > 0) {
+				try{
+					time = Integer.parseInt(newValue);
+				}catch (NumberFormatException e){
+					System.out.println(e.getMessage());
+					fieldNbJoueurs.setText("");
+				}
+			}
 		});
 
 		Button buttonSubmit = creerButtonStartConfig("Start");
 
-		root.add(labelNbJoueurs, 0, 1);
-		root.add(labelTaillePlateau, 0, 2);
-		root.add(labelTime, 0, 3);
-		root.add(fieldNbJoueurs, 1, 1);
-		root.add(fieldTaillePlateau, 1, 2);
-		root.add(fieldTime, 1, 3);
-		root.add(buttonSubmit, 1, 4);
+		Button buttonBack = bouttonRetour();
 
-		Scene scene = new Scene(root, 900, 450);
+		gridPaneContent.add(labelNbJoueurs, 0, 1);
+		gridPaneContent.add(labelTaillePlateau, 0, 2);
+		gridPaneContent.add(labelTime, 0, 3);
+		gridPaneContent.add(fieldNbJoueurs, 1, 1);
+		gridPaneContent.add(fieldTaillePlateau, 1, 2);
+		gridPaneContent.add(fieldTime, 1, 3);
+
+		HBox hBoxButton = new HBox();
+		hBoxButton.setSpacing(150);
+		hBoxButton.setAlignment(Pos.CENTER);
+		hBoxButton.getChildren().add(buttonSubmit);
+		hBoxButton.getChildren().add(buttonBack);
+
+		vBoxRoot.getChildren().add(gridPaneContent);
+		vBoxRoot.getChildren().add(hBoxButton);
+
+
+
+		Scene scene = new Scene(vBoxRoot, 950, 450);
 
 		// Modification du titre de la scène
 		stage.setTitle("Configuration du jeu");
@@ -273,75 +315,111 @@ public class Plateau extends Application implements EtatJeuListener {
 	}
 
 	@Override
-	public void setTour(Tour tour) throws IOException {
+	public void setTour(Tour tour) {
 		this.grilleLettres = new GrilleLettres();
-		gridPane = grilleLettres.getGridPane();
-		grilleLettres.disableAllButton();
+		VBox content = new VBox();
+		if(tour.getJoueur() instanceof JoueurReel) {
 
-		labelTextInformation = new Label();
-		labelTextInformation.setMinWidth((ChargerConfig.getTaillePlateau() - 1) * 80 - 20);
-		labelTextInformation.setMinHeight(50);
+			gridPane = grilleLettres.getGridPane();
+			grilleLettres.disableAllButton();
 
-		// Création du label pour le joueur courant
-		labelJoueur = new Label("\n" + tour.getJoueur().getName() + "\n" + "     0 pts");
-		labelJoueur.setMinWidth(170);
-		labelJoueur.setMinHeight(50);
-		labelJoueur.setAlignment(Pos.CENTER);
-		labelJoueur.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
+			labelTextInformation = new Label();
+			labelTextInformation.setMinWidth((ChargerConfig.getTaillePlateau() - 1) * 80 - 20);
+			labelTextInformation.setMinHeight(50);
 
-		Timer.setGrilleLettres(grilleLettres);
-		VBox vBoxTimer = tour.getTimer().generateTimer();
-		vBoxTimer.setMinWidth(80);
-		vBoxTimer.setMinHeight(50);
+			// Création du label pour le joueur courant
+			labelJoueur = new Label("\n" + tour.getJoueur().getName() + "\n" + "     0 pts");
+			labelJoueur.setMinWidth(170);
+			labelJoueur.setMinHeight(50);
+			labelJoueur.setAlignment(Pos.CENTER);
+			labelJoueur.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-		// Construction de la Hbox contenant l'information (partie et joueur)
-		HBox hboxInformation = new HBox();
-		hboxInformation.getChildren().addAll(vBoxTimer, labelTextInformation, labelJoueur);
-		hboxInformation.setPadding(new Insets(0, 20, 0, 20));
-		hboxInformation.setSpacing(20);
+			Timer.setGrilleLettres(grilleLettres);
+			VBox vBoxTimer = tour.getTimer().generateTimer();
+			vBoxTimer.setMinWidth(80);
+			vBoxTimer.setMinHeight(50);
 
-		// Construction du label pour afficher les mots validés
-		labelMotValider = new Label();
-		labelMotValider.setMinWidth(168);
+			// Construction de la Hbox contenant l'information (partie et joueur)
+			HBox hboxInformation = new HBox();
+			hboxInformation.getChildren().addAll(vBoxTimer, labelTextInformation, labelJoueur);
+			hboxInformation.setPadding(new Insets(0, 20, 0, 20));
+			hboxInformation.setSpacing(20);
 
-		// Construction de la Vbox contenant le score
-		VBox vboxScore = new VBox();
-		vboxScore.getChildren().addAll(labelMotValider);
-		vboxScore.setStyle("-fx-border-width: 2px; -fx-border-color: black");
+			// Construction du label pour afficher les mots validés
+			labelMotValider = new Label();
+			labelMotValider.setMinWidth(168);
 
-		// construction de la Hbox contenant les buttons et le score
-		HBox hboxButton = new HBox();
-		hboxButton.getChildren().addAll(gridPane, vboxScore);
-		hboxButton.setPadding(new Insets(10, 20, 20, 20));
-		hboxButton.setSpacing(20);
+			// Construction de la Vbox contenant le score
+			VBox vboxScore = new VBox();
+			vboxScore.getChildren().addAll(labelMotValider);
+			vboxScore.setStyle("-fx-border-width: 2px; -fx-border-color: black");
 
-		grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter", tour));
-		grilleLettres.getButtonAjouter().setDisable(true);
-		buttonSupprimer = creerButtonSupprimer("Supprimer");
-		buttonSupprimer.setDisable(true);
-		Timer.setButtonSupprimer(buttonSupprimer);
-		// Contruction d'une hbox contenant les bouttons ajout et suppression
-		HBox hBoxButtonAction = new HBox();
-		hBoxButtonAction.setSpacing(8);
-		hBoxButtonAction.getChildren().addAll(grilleLettres.getButtonAjouter(), buttonSupprimer);
+			// construction de la Hbox contenant les buttons et le score
+			HBox hboxButton = new HBox();
+			hboxButton.getChildren().addAll(gridPane, vboxScore);
+			hboxButton.setPadding(new Insets(10, 20, 20, 20));
+			hboxButton.setSpacing(20);
 
-		// Construction de la Hbox contenant le mot en cours et les buttons ajouter et
-		// supprimer
-		HBox hboxMot = new HBox();
-		hboxMot.getChildren().addAll(grilleLettres.getLabelMotEnCours(), hBoxButtonAction);
-		hboxMot.setPadding(new Insets(0, 20, 0, 20));
-		hboxMot.setSpacing(20);
+			grilleLettres.setButtonAjouter(creerButtonAjouter("Ajouter", tour));
+			grilleLettres.getButtonAjouter().setDisable(true);
+			buttonSupprimer = creerButtonSupprimer("Supprimer");
+			buttonSupprimer.setDisable(true);
+			Timer.setButtonSupprimer(buttonSupprimer);
+			// Contruction d'une hbox contenant les bouttons ajout et suppression
+			HBox hBoxButtonAction = new HBox();
+			hBoxButtonAction.setSpacing(8);
+			hBoxButtonAction.getChildren().addAll(grilleLettres.getButtonAjouter(), buttonSupprimer);
 
-		// Contruction de la Vbox contenant le tout
-		VBox vboxPrincipale = new VBox();
-		vboxPrincipale.getChildren().addAll(hboxInformation, hboxButton, hboxMot);
+			// Construction de la Hbox contenant le mot en cours et les buttons ajouter et
+			// supprimer
+			HBox hboxMot = new HBox();
+			hboxMot.getChildren().addAll(grilleLettres.getLabelMotEnCours(), hBoxButtonAction);
+			hboxMot.setPadding(new Insets(0, 20, 0, 20));
+			hboxMot.setSpacing(20);
 
-		// Construction de la scéne
-		Scene scene = new Scene(vboxPrincipale, (ChargerConfig.getTaillePlateau() * 80) + 230,
+			// Contruction de la Vbox contenant le tout
+			content.getChildren().addAll(hboxInformation, hboxButton, hboxMot);
+			stage.setTitle("Plateau de jeu BOGGLE");
+
+		}
+		else{
+			OrdinateurBasique ordinateurBasique = (OrdinateurBasique) tour.getJoueur();
+			HBox hBox = new HBox();
+			hBox.setAlignment(Pos.CENTER);
+			Label titre = new Label(ordinateurBasique.getName() + " à validé les mots suivants :");
+			hBox.getChildren().add(titre);
+			titre.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
+			ListView<String> listView = new ListView<>();
+			listView.setStyle("-fx-background-insets: 0;-fx-box-border:orange;-fx-border-color:orange;");
+			List<String> motTrouve = ordinateurBasique.jouerTour(grilleLettres);
+			listView.getItems().addAll(motTrouve);
+			HBox hBox2 = new HBox();
+			hBox2.setAlignment(Pos.CENTER);
+			Button button = new Button();
+			button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
+			button.setMinWidth((ChargerConfig.getTaillePlateau() * 80) + 180);
+			button.setMinHeight((ChargerConfig.getTaillePlateau() * 10));
+			button.setText("OK");
+			hBox2.getChildren().add(button);
+			button.setOnMouseClicked(event -> {
+				try {
+					tour.findDuTour();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			content.getChildren().add(hBox);
+			content.getChildren().add(listView);
+			content.getChildren().add(hBox2);
+			content.setPadding(new Insets(20, 20, 20, 20));
+			content.setSpacing(10);
+			stage.setTitle("Résultat du tour " + ordinateurBasique.getName());
+		}
+
+		// Construction de la scene
+		Scene scene = new Scene(content, (ChargerConfig.getTaillePlateau() * 80) + 230,
 				(ChargerConfig.getTaillePlateau() * 80) + 160);
 
-		// Modification du titre de la scène
-		stage.setTitle("Plateau de jeu BOGGLE");
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
@@ -358,7 +436,7 @@ public class Plateau extends Application implements EtatJeuListener {
 		labelScore.setAlignment(Pos.CENTER);
 		labelScore.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
 
-		Label labelWinner = new Label("Le gagnant est : ");
+		Label labelWinner = new Label();
 		labelWinner.setMinWidth(520);
 		labelWinner.setMinHeight(100);
 		labelWinner.setAlignment(Pos.CENTER);
@@ -380,30 +458,66 @@ public class Plateau extends Application implements EtatJeuListener {
 			result += tour.getJoueur().toString() + " \n\n";
 
 			// Si le joueur a obtenu un highscore -> sauvegarde
-			if (tour.getJoueur().getScore() > HighScore.getHighScores()[9].getScore()) {
-				String name = JOptionPane.showInputDialog(null,
-						tour.getJoueur().getName()
-								+ ", vous avez eu un des 10 meilleurs scores!\nEntrez votre nom svp.",
-						"Boogle", JOptionPane.INFORMATION_MESSAGE);
-				if (name != null)
-					HighScore.addHighScore(new HighScore(tour.getJoueur().getScore(),
-							(name.length() > 10) ? name.substring(0, 10) : name));
+			//si le joueur n'est pas un ordinateur
+			if(!(tour.getJoueur() instanceof OrdinateurBasique)) {
+				if (tour.getJoueur().getScore() > HighScore.getHighScores()[9].getScore()) {
+					String name = JOptionPane.showInputDialog(null,
+							tour.getJoueur().getName()
+									+ ", vous avez eu un des 10 meilleurs scores!\nEntrez votre nom svp.",
+							"Boogle", JOptionPane.INFORMATION_MESSAGE);
+					if (name != null)
+						HighScore.addHighScore(new HighScore(tour.getJoueur().getScore(),
+								(name.length() > 10) ? name.substring(0, 10) : name));
+				}
 			}
+		}
 
+		// Désignation du gagnant
+		ArrayList<Tour> winner = new ArrayList<>();
+		for (Tour tour : tourList) {
+			if (winner.isEmpty()) {
+				winner.add(tour);
+			} else {
+				if (tour.getJoueur().getScore() > winner.get(0).getJoueur().getScore()) {
+					winner.clear();
+					winner.add(tour);
+				} else {
+					if (tour.getJoueur().getScore() == winner.get(0).getJoueur().getScore()) {
+						winner.add(tour);
+					}
+				}
+			}
+		}
+		
+		String resultWinner = "";		
+		for (Tour tour : winner) {
+			if(tourList.size()>1) {
+				if (winner.size() == 1) {
+					if(winner.get(0).getJoueur() instanceof OrdinateurBasique){
+						resultWinner += "Le vainqueur est : " + tour.getJoueur().getName();
+
+					}else {
+						resultWinner += "Le vainqueur est : " + tour.getJoueur().getName() + "\nFélicitations !!!";
+					}
+				}
+				else {
+					resultWinner += "Il n'y a pas de vainqueur";
+					break;
+				}
+			}
 		}
 
 		// Récupération des Highscores
 		String highscores = "Les 10 meilleurs scores :\n\n\n";
 		for (int i = 0; i < HighScore.getHighScores().length; i++) {
 			if (HighScore.getHighScores()[i].getScore() != 0) {
-				// System.out.println(HighScore.getHighScores()[i].getName() + " " +
-				// HighScore.getHighScores()[i].getScore());
 				highscores += HighScore.getHighScores()[i].getName() + "  " + HighScore.getHighScores()[i].getScore()
 						+ " points\n";
 			}
 		}
 
 		labelScore.setText(result);
+		labelWinner.setText(resultWinner);
 		labelHighScore.setText(highscores);
 
 		Button buttonRecommencer = creerButtonRecommencer("Recommencer");
@@ -426,7 +540,7 @@ public class Plateau extends Application implements EtatJeuListener {
 		VBox vboxPrincipale = new VBox();
 		vboxPrincipale.getChildren().addAll(hBox, buttonRecommencer);
 
-		Scene scene = new Scene(vboxPrincipale, 520 + 250, tourList.size() * 100 + 50 + 205);
+		Scene scene = new Scene(vboxPrincipale, 520 + 250, tourList.size() * 100 + 155);
 
 		// Modification du titre de la scène
 		stage.setTitle("Fin du jeu");
@@ -434,22 +548,6 @@ public class Plateau extends Application implements EtatJeuListener {
 		stage.setResizable(false);
 		stage.show();
 	}
-
-	// Permet la création de boutton
-//    private Button creerButtonBienvenue(String s) {
-//        Button button = new Button(s);
-//        button.setMinWidth(80);
-//        button.setMinHeight(80);
-//        button.setStyle("-fx-border-color: #6a6a69; -fx-border-width: 4px");
-//        button.setOnMouseClicked(e -> {
-//            try {
-//                startBienvenue();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//        });
-//        return button;
-//    }
 
 	// Permet la création de boutton
 	private Button creerButtonRecommencer(String s) {
@@ -495,6 +593,7 @@ public class Plateau extends Application implements EtatJeuListener {
 						grilleLettres.enableAllButton();
 						grilleLettres.getButtonAjouter().setDisable(true);
 						labelTextInformation.setText("Bravo !");
+						grilleLettres.resetColorButton();
 					} else {
 						labelTextInformation.setText("Ce mot n'existe pas !");
 					}
@@ -523,11 +622,12 @@ public class Plateau extends Application implements EtatJeuListener {
 			grilleLettres.getButtonAjouter().setDisable(true);
 			grilleLettres.getButtonListCheck().clear();
 			grilleLettres.enableAllButton();
+			grilleLettres.resetColorButton();
 		});
 		return button;
 	}
 
 	public boolean estDansDictionnaire(String motEnCours) throws FileNotFoundException {
-		return ChargerConfig.getArbreLexicalLudo().contient(motEnCours);
+		return ChargerConfig.getArbreLexical().contient(motEnCours);
 	}
 }
