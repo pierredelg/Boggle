@@ -20,7 +20,6 @@ public class Config {
     //On charge les config de chaques dés avec laquelle on va créer le dé
     //et le lancer
     public List<De> chargerConfigDe(){
-        System.out.println(nomFichierDes);
         File file = new File(nomFichierDes);
 
         try{

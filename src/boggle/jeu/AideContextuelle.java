@@ -2,6 +2,7 @@ package boggle.jeu;
 
 import boggle.config.ChargerConfig;
 import javafx.scene.control.Button;
+import util.ButtonPerso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,20 +11,20 @@ import java.util.List;
 public class AideContextuelle {
 
     private String motEnCours;
-    private ArrayList<Button> validButtons;
+    private List<ButtonPerso> validButtons;
     private ArrayList<String> motsPossibles;
     private List<Character> characters;
     private String HELPBUTTONSTYLE = "-fx-border-color: #6a6a69; -fx-border-width: 4px; -fx-background-color: orange";
 
 
-    public AideContextuelle(String motEnCours, ArrayList<Button> validButtons) {
+    public AideContextuelle(String motEnCours, List<ButtonPerso> validButtons) {
         this.motEnCours = motEnCours;
         this.validButtons = validButtons;
         this.motsPossibles = setHelpList(validButtons);
         this.characters = helpLetterList(motsPossibles);
     }
 
-    public ArrayList<String> setHelpList(ArrayList<Button> validButtons){
+    public ArrayList<String> setHelpList(List<ButtonPerso> validButtons){
         //On crée la liste à renvoyer
         ArrayList<String> helpList = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class AideContextuelle {
         ArrayList<Character> lettresPossibles = new ArrayList<>();
 
         //On récupere la liste des lettres possibles
-        validButtons.forEach(button1 -> lettresPossibles.add(button1.getText().charAt(0)));
+        validButtons.forEach(button1 -> lettresPossibles.add(button1.getButton().getText().charAt(0)));
 
         //On parcourt la liste des mots possibles
         //On ajoute à la liste à renvoyer les mots possible à construire avec les lettres suivantes
@@ -70,9 +71,9 @@ public class AideContextuelle {
 
     //On ajoute une coloration sur les boutons des prochaines lettres suceptibles de créer un mot
     public void colorHelpButton(){
-        //Pour chaque boutons valides on vérifie que son caractere est présent dans la liste des caractère
+        //Pour chaque boutons valides on vérifie que son caractere est présent dans la liste des caractères
         for(int i = 0 ; i < validButtons.size();i++){
-            Button button = validButtons.get(i);
+            Button button = validButtons.get(i).getButton();
             Character characterButton = button.getText().charAt(0);
             if(characters.contains(characterButton)){
                 button.setStyle(HELPBUTTONSTYLE);

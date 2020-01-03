@@ -33,7 +33,7 @@ public class ChargerConfig {
 
             switch (split[0].trim()) {
 
-                case "nombre-joueur":
+                case "nombre-joueurReel":
                     nombreJoueur = Integer.parseInt(split[1].trim());
                     break;
                 case "taille-plateau":
@@ -63,7 +63,7 @@ public class ChargerConfig {
                     timerSeconde = (temp > 300) ? 180 : temp;
                     break;
                 default:
-                    throw new InvalidNameConfig("Paramètre de configuration non connue");
+                    throw new InvalidNameConfig("Paramètre de configuration non connu");
             }
         }
     }

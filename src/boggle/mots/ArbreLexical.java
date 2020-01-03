@@ -1,5 +1,4 @@
 package boggle.mots;
-import boggle.config.ChargerConfig;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

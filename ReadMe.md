@@ -2,12 +2,12 @@
 ##Projet long / GL / LP DA2I / semestre 1
 ###Descriptif du projet
 
-On souhaite réaliser une adaptation du jeu de lettres «Boggle» (Hasbro), dans lequel les joueurs gagnent des points en essayant de construire le plus possible de mots (et les plus longs mots possibles) à partir d'une grille de lettres aléatoire. Ce jeu se joue en principe à plusieurs joueurs (tous les joueurs étant confrontés à la même grille pendant un temps limité), mais pour simplifier le problème nous l'adapterons en un jeu tour par tour en changeant la grille entre chaque joueur. Pour former les mots, on peut partir de n'importe quelle case, mais on doit obligatoirement prendre la lettre suivante sur une case adjacente (l'une des 8 cases voisines) et ne jamais utiliser deux fois la même case. Un mot ne compte que s'il comporte au moins 3 lettres (pour une grille 4x4) ou 4 lettres (pour une grille 5x5). Ce projet sera réalisé en Java. Les caractéristiques du jeu (taille du plateau, nombre de joueurs, dictionnaire à utiliser, valeur des dés pour le tirage des lettres de la grille, etc.) doivent être personnalisables et permettre des extensions.
+On souhaite réaliser une adaptation du jeu de lettres «Boggle» (Hasbro), dans lequel les joueurs gagnent des points en essayant de construire le plus possible de mots (et les plus longs mots possibles) à partir d'une grille de lettres aléatoire. Ce jeu se joue en principe à plusieurs joueurs (tous les joueurs étant confrontés à la même grille pendant un temps limité), mais pour simplifier le problème nous l'adapterons en un jeu tour par tour en changeant la grille entre chaque joueurReel. Pour former les mots, on peut partir de n'importe quelle case, mais on doit obligatoirement prendre la lettre suivante sur une case adjacente (l'une des 8 cases voisines) et ne jamais utiliser deux fois la même case. Un mot ne compte que s'il comporte au moins 3 lettres (pour une grille 4x4) ou 4 lettres (pour une grille 5x5). Ce projet sera réalisé en Java. Les caractéristiques du jeu (taille du plateau, nombre de joueurs, dictionnaire à utiliser, valeur des dés pour le tirage des lettres de la grille, etc.) doivent être personnalisables et permettre des extensions.
 
 Pour pouvoir jouer de façon intéressante il faut au minimum implémenter les règles suivantes.
 
-    On joue avec un nombre quelconque de joueurs (entre 1 et 5), soit pour un nombre de manches fixé au départ, soit jusqu'à ce qu'un joueur atteigne un score cible.
-    Le tour de jeu (une manche) : chaque joueur joue à tour de rôle. Le programme tire une grille aléatoirement (voir ci-dessous), le joueur constitue alors ses mots en désignant les lettres correspondantes et les ajoute successivement à sa liste de mots. Lorsqu'il pense avoir fini, il indique avoir terminé: on compte alors son score et on passe au joueur suivant. Le score est calculé en fonction de la taille des mots trouvés qui sont présents dans le dictionnaire et ont été construits en respectant la règle (1 point pour 3-4 lettres, 2 pour 5, 3 pour 6, 5 pour 7, et 11 au-delà).
+    On joue avec un nombre quelconque de joueurs (entre 1 et 5), soit pour un nombre de manches fixé au départ, soit jusqu'à ce qu'un joueurReel atteigne un score cible.
+    Le tour de jeu (une manche) : chaque joueurReel joue à tour de rôle. Le programme tire une grille aléatoirement (voir ci-dessous), le joueurReel constitue alors ses mots en désignant les lettres correspondantes et les ajoute successivement à sa liste de mots. Lorsqu'il pense avoir fini, il indique avoir terminé: on compte alors son score et on passe au joueurReel suivant. Le score est calculé en fonction de la taille des mots trouvés qui sont présents dans le dictionnaire et ont été construits en respectant la règle (1 point pour 3-4 lettres, 2 pour 5, 3 pour 6, 5 pour 7, et 11 au-delà).
     Les grilles sont des carrés de côté N (en général N = 4) et sont construites par le lancer de N2
 
     dés. Les lettres affichées sur les faces visibles des NxN dés donnent le contenu de la grille. Évidemment pour assurer la jouabilité, toutes les lettres ne sont pas équiprobables, il faut donc permettre la configuration des dés via un fichier.
@@ -54,11 +54,11 @@ Vous devez également choisir quelques améliorations à votre gré, parmi les i
 
     interface graphique (Swing ou JavaFX);
     mémorisation des 10 meilleurs scores;
-    mise en place d'un sablier qui limite le temps de chaque joueur et donne automatiquement la main au joueur suivant;
-    aide contextuelle: si le joueur a commencé un mot d'au moins 3 lettres, le programme signale les cases adjacentes à la dernière case sélectionnée, susceptibles de produire un mot plus grand (et ainsi de suite au fur et à mesure que le mot grandit);
-    conception d'un joueur piloté par l'ordinateur (de force réglable):
-        version basique: le joueur artificiel effectue une recherche en profondeur d'abord à partir d'une position aléatoire;
-        version améliorée: le joueur artificiel s'appuie sur des informations statistiques contenues dans l'arbre lexical (p.ex. nombre de mots par sous-arbre) pour guider son exploration;
+    mise en place d'un sablier qui limite le temps de chaque joueurReel et donne automatiquement la main au joueurReel suivant;
+    aide contextuelle: si le joueurReel a commencé un mot d'au moins 3 lettres, le programme signale les cases adjacentes à la dernière case sélectionnée, susceptibles de produire un mot plus grand (et ainsi de suite au fur et à mesure que le mot grandit);
+    conception d'un joueurReel piloté par l'ordinateur (de force réglable):
+        version basique: le joueurReel artificiel effectue une recherche en profondeur d'abord à partir d'une position aléatoire;
+        version améliorée: le joueurReel artificiel s'appuie sur des informations statistiques contenues dans l'arbre lexical (p.ex. nombre de mots par sous-arbre) pour guider son exploration;
 
 ###Documents à rendre
 
