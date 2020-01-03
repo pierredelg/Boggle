@@ -49,7 +49,7 @@ direction edit configuration/VM option et ajoutez la ligne suivante:
 - Suivez les instructions pour créez le boggle.jar:
 > http://info.clg.qc.ca/java/divers/creer-jar-intellij-idea
 
-Une fois crééé, ajouter dans edit configurations du boogle.jar la ligne suivante dans VM options:
+Une fois crééé, ajouter dans edit configurations du boogle.jar la ligne suivante dans VM options puis lancer le boggle.jar:
 --module-path "chemin vers votre repertoire"/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib --add-modules=javafx.controls
 
 
