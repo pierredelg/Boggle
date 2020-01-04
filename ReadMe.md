@@ -24,15 +24,9 @@
 
 - Placez vous dans le repertoire boggle_jar est lancer la commande suivante:
 
-java -cp "chemin/vers/repertoire/du/jdk11 --module-path "chemin/vers/repertoire/openjfx/lib" --add-modules=javafx.controls -Dfile.encoding=UTF-8 -jar "boggle.jar"
+java -cp "chemin/vers/repertoire/du/jdk11/bin/java --module-path "chemin/vers/repertoire/openjfx/lib" --add-modules=javafx.controls -Dfile.encoding=UTF-8 -jar "boggle.jar"
 
 exemple:
 
-java -cp /home/ludo/javaJDK/jdk-11.0.5/bin/java --module-path /home/ludo/javaJDK/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib --add-modules=javafx.controls -Dfile.encoding=UTF-8 -jar /home/ludo/LPDA2I/boggle/out/artifacts/boggle_jar/boggle.jar
+java -cp /home/ludo/javaJDK/jdk-11.0.5/bin/java --module-path /home/ludo/javaJDK/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib --add-modules=javafx.controls -Dfile.encoding=UTF-8 -jar boggle.jar
 
-
-
-
-
-####Installer find
-> sudo apt-get install find
