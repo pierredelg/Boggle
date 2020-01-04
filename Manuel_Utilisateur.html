@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="manUser.css" rel="stylesheet">
+    <title>Manuel Utilisateur Boggle</title>
+  </head>
+  <body>
+	<h1>Manuel d'utilisation de Boggle</h1>
+	<h2>Présentation</h2>
+
+Boggle est un jeu de mots. Le jeu se joue à l'aide d'une grille composée de lettres, dans laquelle les joueurs tentent de trouver des mots dans des séquences de lettres adjacentes (les plus longs mots possibles). Notre version du jeu permet de jouer seul, à plusieurs joueurs, ou seul contre l'ordinateur (intelligence artificielle).
+
+Le jeu se déroule tour par tour en changeant la grille entre chaque joueur.
+
+	<h2>Déroulement du jeu</h2>
+
+Le jeu commence par le mélange d'un plateau (carré) de 16 dés à 6 faces. Chaque dé possède une lettre différente sur chacune de ses faces. Les dés sont rangés sur le plateau 4 par 4, et seule leur face supérieure est visible. Après cette opération, un compte à rebours de 3 minutes est lancé et un joueur peut jouer. Puis ça sera à un autre joueur de jouer avec une grille différente.
+
+Chaque joueur cherche des mots pouvant être formés à partir de lettres adjacentes du plateau. Par « adjacentes », il est sous-entendu horizontalement, verticalement, ou en diagonale. Les mots doivent être de 3 lettres au minimum, peuvent être au singulier ou au pluriel, conjugués ou non, mais ne doivent pas utiliser plusieurs fois le même dé pour le même mot.
+
+Le score est calculé en fonction de la taille des mots trouvés qui sont présents dans le dictionnaire et ont été construits en respectant la règle (1 point pour 3-4 lettres, 2 pour 5, 3 pour 6, 5 pour 7, et 11 au-delà).
+
+	<h2>Ajouts introduits</h2>
+
+Nous avons utilisé une interface graphique javaFX de manière à sublimer l'expérience utilisateur.
+
+Nous avons mis en place un système de "highscore", qui s'occupe de la mémorisation des 10 meilleurs scores. Les 10 meilleurs scores apparaissent systématiquement à la fin d'une partie.
+
+Nous avons également mis en place un Timer qui limite le temps de chaque joueur et donne automatiquement la main au joueur suivant (ou à l'ordinateur).
+
+De manière à faciliter la compréhension du jeu, et également, la visibilité, nous avons décidé qu'il était utile de griser les cases non adjacentes et "d'allumer" les cases adjacentes. Évidemment si le joueur clique sur une lettre grisée (non adjacente), la lettre n'est pas prise en compte.
+
+Nous avons mis en place un système d'aide contextuelle : si le joueur a commencé un mot d'au moins 3 lettres, le programme signale les cases adjacentes à la dernière case sélectionnée, susceptibles de produire un mot plus grand (et ainsi de suite au fur et à mesure que le mot grandit). Les cases concernées s'illuminent en orange.
+
+Nous avons conçu un joueur artificiel basique piloté par l'ordinateur, qui effectue une recherche en profondeur d'abord à partir d'une position aléatoire.
+
+	<h2>Interface graphique</h2>
+
+En démarrant le jeu, une interface graphique javaFX apparaît.
+
+Premièrement, apparaît une page de bienvenue, avec un rappel des règles du jeu Boggle et en dessous un bouton "start" permettant de continuer.
+
+Deuxièmement, apparaît une page de sélection des différents modes de jeu possibles représentés par des boutons cliquables :
+<ul>
+
+<li>1 joueur</li>
+
+<li>2 joueurs</li>
+
+<li>1 joueurs vs CPU</li>
+
+<li>Autre configuration</li>
+
+</ul>
+
+Le bouton "autre configuration" permet de changer la configuration du jeu. Apparaissent alors différents champs qu'il est possible de modifier comme la taille du plateau, le nombre de joueurs ou encore le temps pour chaque joueur. Enfin un bouton start permet de démarrer le jeu.
+
+Troisièmement, l'interface de jeu.
+
+Elle est composée d'une grille de lettres définies aléatoirement au centre de la fenêtre. Au dessus s'affiche le Timer, lorsque le temps est écoulé, la main passe automatiquement au joueur suivant. À droite, on trouve la colonne dans laquelle viennent s'ajouter les mots valides et au dessus le nom du joueur ainsi que son score qui évolue dynamiquement.
+
+En dessous de cette colonne, 2 boutons, ajouter pour ajouter un mot que l'on pense valide, et supprimer pour recommencer un mot à zéro.
+
+Finalement, l'interface de fin de jeu.
+
+C'est l'interface qui résume la partie écoulée avec 2 parties :
+<ul>
+
+<li>Le résultat des joueurs avec leur nombre de points et la désignation du vainqueur s'il y en a un.</li>
+
+<li>Le tableau des 10 meilleurs scores historique du jeu.</li>
+</ul>
+
+Ensuite un bouton recommencer permet de rejouer une nouvelle partie et nous renvoie sur la fenêtre de bienvenue.
+<br><br>
+  </body>
+</html>
